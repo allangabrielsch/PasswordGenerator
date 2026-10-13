@@ -1,27 +1,56 @@
 <!DOCTYPE html>
+<!--
+    bears password page
+    made by hand in notepad at 3am. no frameworks were harmed
+    if ur reading the source code: hi. respect. go outside
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="dark">
-    <title>Password Generator ʕ•ᴥ•ʔ</title>
+    <title>Bear's Password Page ʕ•ᴥ•ʔ</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- remembers if u turned the lights off. runs early so the page doesnt flash u in the face -->
+    <script>
+        try { if (localStorage.getItem('bear-theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch {}
+    </script>
 
     <style>
+        /* light mode = windows 95 grey, the way god and bill gates intended.
+           dark mode is for cowards and people with eyes. its behind the lights button */
         :root {
-            --bg-1: #0f172a;
-            --bg-2: #1e1b4b;
-            --well: #0b1222;
-            --well-line: #334155;
-            --text: #f1f5f9;
-            --muted: #94a3b8;
-            --blue: #60a5fa;
-            --emerald: #34d399;
-            --rose: #fb7185;
-            --kaomoji: system-ui, -apple-system, 'Segoe UI', 'Segoe UI Symbol', 'Noto Sans', 'Arial Unicode MS', sans-serif;
+            --win-bg: #c0c0c0;
+            --win-text: #000000;
+            --bevel-hi: #ffffff;
+            --bevel-lo: #404040;
+            --bevel-mid: #808080;
+            --bevel-hi2: #dfdfdf;
+            --well-bg: #ffffff;
+            --digit: #0000ff;
+            --symbol: #cc0000;
+            --translation: #444444;
+            --translation-em: #000080;
+            --bear-bg: #ffffcc;
+            --bear-border: #ff9900;
+            --bear-face: #663300;
+            --bear-label: #cc0000;
+        }
+        :root[data-theme="dark"] {
+            --win-bg: #2d2d34;
+            --win-text: #e8e8ec;
+            --bevel-hi: #5c5c68;
+            --bevel-lo: #0c0c10;
+            --bevel-mid: #1a1a20;
+            --bevel-hi2: #42424c;
+            --well-bg: #121217;
+            --digit: #79aaff;
+            --symbol: #ff7a7a;
+            --translation: #9c9cab;
+            --translation-em: #b4c8ff;
+            --bear-bg: #2c2816;
+            --bear-border: #a86400;
+            --bear-face: #e7b98a;
+            --bear-label: #ff7a7a;
         }
 
         * { box-sizing: border-box; }
@@ -29,206 +58,342 @@
 
         body {
             min-height: 100vh;
-            display: grid;
-            place-items: center;
-            padding: 16px;
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-            color: var(--text);
-            background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%) fixed;
+            padding: 0 0 40px;
+            background: #000033 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Crect width='140' height='140' fill='%23000033'/%3E%3Ccircle cx='12' cy='18' r='1.2' fill='%23fff'/%3E%3Ccircle cx='70' cy='9' r='0.8' fill='%23fff'/%3E%3Ccircle cx='118' cy='30' r='1.4' fill='%23ffff99'/%3E%3Ccircle cx='40' cy='60' r='0.9' fill='%23fff'/%3E%3Ccircle cx='96' cy='74' r='1' fill='%23ccccff'/%3E%3Ccircle cx='20' cy='104' r='1.3' fill='%23fff'/%3E%3Ccircle cx='132' cy='118' r='0.8' fill='%23fff'/%3E%3Ccircle cx='66' cy='126' r='1.1' fill='%23ffff99'/%3E%3Cpath d='M84 38l2 5 5 2-5 2-2 5-2-5-5-2 5-2z' fill='%23ffff66'/%3E%3Cpath d='M28 82l1.4 3.6 3.6 1.4-3.6 1.4L28 92l-1.4-3.6L23 87l3.6-1.4z' fill='%23ffffff'/%3E%3C/svg%3E") repeat;
+            color: #ffffff;
+            font-family: 'Comic Sans MS', 'Comic Sans', 'Chalkboard SE', 'Comic Neue', cursive;
+            font-size: 16px;
+            text-align: center;
         }
 
-        .card {
-            width: 100%;
-            max-width: 460px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding: clamp(20px, 5vw, 32px);
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.10);
-            border-radius: 20px;
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            box-shadow: 0 30px 60px -20px rgba(2, 6, 23, 0.7);
+        /* two extra star layers that fade in and out at different speeds.
+           took me way too long. please say the stars look nice */
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background-repeat: repeat;
+        }
+        body::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='190'%3E%3Cpath d='M30 35L31.4 38.6L35 40L31.4 41.4L30 45L28.6 41.4L25 40L28.6 38.6Z' fill='%23ffffff'/%3E%3Ccircle cx='150' cy='22' r='1.6' fill='%23ffff99'/%3E%3Cpath d='M110 114L111.7 118.3L116 120L111.7 121.7L110 126L108.3 121.7L104 120L108.3 118.3Z' fill='%23ffff66'/%3E%3Ccircle cx='60' cy='160' r='1.5' fill='%23ccccff'/%3E%3Ccircle cx='170' cy='150' r='1.3' fill='%23ffffff'/%3E%3C/svg%3E");
+            animation: twinkle 2.6s ease-in-out infinite alternate;
+        }
+        body::after {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cpath d='M200 55L201.4 58.6L205 60L201.4 61.4L200 65L198.6 61.4L195 60L198.6 58.6Z' fill='%23ccffff'/%3E%3Ccircle cx='40' cy='200' r='1.7' fill='%23ffffff'/%3E%3Cpath d='M90 26L91.1 28.9L94 30L91.1 31.1L90 34L88.9 31.1L86 30L88.9 28.9Z' fill='%23ffccff'/%3E%3Ccircle cx='230' cy='210' r='1.4' fill='%23ffff99'/%3E%3Cpath d='M140 175L141.4 178.6L145 180L141.4 181.4L140 185L138.6 181.4L135 180L138.6 178.6Z' fill='%23ffffff'/%3E%3Ccircle cx='20' cy='100' r='1.2' fill='%23ffffff'/%3E%3C/svg%3E");
+            background-position: 37px 53px;
+            animation: twinkle 3.7s ease-in-out -1.3s infinite alternate;
+        }
+        @keyframes twinkle {
+            0%, 20% { opacity: 0; }
+            80%, 100% { opacity: 1; }
         }
 
-        header { text-align: center; }
+        a { color: #00ffff; }
+        a:visited { color: #ff66ff; }
+
+        /* ---------- wordart. microsoft office 97 lives on in my heart ---------- */
         h1 {
-            margin: 0;
-            font-size: clamp(1.4rem, 5vw, 1.75rem);
-            font-weight: 700;
-            letter-spacing: -0.02em;
-        }
-        header p {
-            margin: 6px 0 0;
-            color: var(--muted);
-            font-size: 0.875rem;
+            margin: 22px 12px 4px;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive;
+            font-size: clamp(1.8rem, 8vw, 3rem);
+            line-height: 1.1;
+            background: linear-gradient(90deg, #ff0000, #ff9900, #ffff00, #00ff00, #00ffff, #6666ff, #ff00ff, #ff0000);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(3px 3px 0 #000) drop-shadow(1px 1px 0 #fff);
         }
 
-        /* ---------- The bear ---------- */
-        .bear-row {
+        .tagline {
+            margin: 0 12px 18px;
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+            color: #ccffcc;
+        }
+
+        /* ---------- fake windows 95 window. no it cannot run doom ---------- */
+        .window {
+            width: calc(100% - 24px);
+            max-width: 560px;
+            margin: 0 auto;
+            background: var(--win-bg);
+            color: var(--win-text);
+            text-align: left;
+            border: 2px solid;
+            border-color: var(--bevel-hi) var(--bevel-lo) var(--bevel-lo) var(--bevel-hi);
+            box-shadow: 1px 1px 0 #000, 6px 6px 0 rgba(0, 0, 0, 0.5);
+            font-family: 'MS Sans Serif', Tahoma, Verdana, Geneva, sans-serif;
+            font-size: 14px;
+        }
+        .titlebar {
             display: flex;
             align-items: center;
-            gap: 14px;
-            min-height: 64px;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 3px 3px 3px 6px;
+            background: linear-gradient(90deg, #000080, #1084d0);
+            color: #fff;
+            font-weight: bold;
+        }
+        .titlebar-buttons { display: flex; gap: 2px; }
+        .titlebar-buttons button {
+            width: 20px;
+            height: 18px;
+            padding: 0;
+            font: bold 11px/1 Tahoma, Verdana, sans-serif;
+        }
+        .window-body { padding: 14px; display: flex; flex-direction: column; gap: 14px; }
+
+        button.w95, .titlebar-buttons button {
+            background: var(--win-bg);
+            color: var(--win-text);
+            border: 2px solid;
+            border-color: var(--bevel-hi) var(--bevel-lo) var(--bevel-lo) var(--bevel-hi);
+            box-shadow: inset -1px -1px 0 var(--bevel-mid), inset 1px 1px 0 var(--bevel-hi2);
+            cursor: pointer;
+        }
+        button.w95:active, .titlebar-buttons button:active {
+            border-color: var(--bevel-lo) var(--bevel-hi) var(--bevel-hi) var(--bevel-lo);
+            box-shadow: inset 1px 1px 0 var(--bevel-mid);
+            padding-top: 1px;
+        }
+        button.w95:focus-visible { outline: 1px dotted var(--win-text); outline-offset: -6px; }
+
+        /* ---------- the bear lives here. do not feed the bear ---------- */
+        .bear-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bear-bg);
+            border: 3px ridge var(--bear-border);
+            padding: 8px 10px;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive;
         }
         .bear {
             flex-shrink: 0;
-            min-width: 92px;
-            text-align: center;
-            font-family: var(--kaomoji);
-            font-size: 1.45rem;
-            white-space: nowrap;
-            cursor: pointer;
-            user-select: none;
+            min-width: 84px;
+            padding: 2px;
             background: none;
             border: 0;
-            color: var(--text);
-            padding: 4px;
-            border-radius: 8px;
+            color: var(--bear-face);
+            font-family: system-ui, -apple-system, 'Segoe UI', 'Segoe UI Symbol', 'Noto Sans', sans-serif;
+            font-size: 1.3rem;
+            white-space: nowrap;
+            cursor: pointer;
         }
         .bear.bounce { animation: bounce 380ms ease-out; }
         @keyframes bounce {
-            0%   { transform: translateY(0); }
-            35%  { transform: translateY(-7px) rotate(-4deg); }
-            70%  { transform: translateY(1px) rotate(2deg); }
-            100% { transform: translateY(0); }
+            35% { transform: translateY(-6px) rotate(-6deg); }
+            70% { transform: translateY(1px) rotate(3deg); }
         }
-        .bubble {
-            position: relative;
+        .bear-says { flex: 1; font-size: 0.95rem; line-height: 1.4; }
+        .bear-says b { color: var(--bear-label); }
+
+        /* ---------- the actual point of this website ---------- */
+        .label { font-weight: bold; margin-bottom: 4px; }
+        .pw-row { display: flex; gap: 8px; align-items: stretch; }
+        .pw-box {
             flex: 1;
-            padding: 10px 14px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 14px;
-            font-size: 0.9rem;
-            line-height: 1.45;
+            min-width: 0;
+            padding: 10px 12px;
+            background: var(--well-bg);
+            border: 2px solid;
+            border-color: var(--bevel-lo) var(--bevel-hi) var(--bevel-hi) var(--bevel-lo);
+            box-shadow: inset 1px 1px 0 #000;
         }
-        .bubble::before {
-            content: "";
-            position: absolute;
-            left: -7px;
-            top: 50%;
-            width: 12px;
-            height: 12px;
-            background: #1f2546;
-            border-left: 1px solid rgba(255, 255, 255, 0.12);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-            transform: translateY(-50%) rotate(45deg);
-        }
-
-        /* ---------- Password readout ---------- */
-        .readout {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-height: 96px;
-            padding: 16px 12px 16px 20px;
-            background: var(--well);
-            border: 1px solid var(--well-line);
-            border-radius: 12px;
-        }
-        .readout-text { flex: 1; min-width: 0; }
-
         .password {
-            font-family: 'Fira Code', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
-            font-size: clamp(1.15rem, 4.8vw, 1.45rem);
-            font-weight: 600;
-            line-height: 1.35;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: clamp(1.1rem, 4.6vw, 1.4rem);
+            font-weight: bold;
             word-break: break-all;
-            letter-spacing: 0.02em;
+            line-height: 1.3;
         }
-        /* Symbols and digits get their own colour so 0/O and 5/S are easy to tell apart. */
-        .password .d { color: var(--blue); }
-        .password .s { color: var(--emerald); }
-        .password.fresh { animation: settle 220ms ease-out; }
-        @keyframes settle { from { opacity: 0.3; } to { opacity: 1; } }
-
+        .password .d { color: var(--digit); }
+        .password .s { color: var(--symbol); }
         .translation {
             margin-top: 6px;
-            color: var(--muted);
-            font-size: 0.8125rem;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 0.95rem;
+            color: var(--translation);
         }
-        .translation em { color: #cbd5e1; font-style: italic; }
+        .translation em { color: var(--translation-em); }
 
-        .copy-btn {
-            flex-shrink: 0;
-            display: grid;
-            place-items: center;
-            width: 44px;
-            height: 44px;
-            border: 0;
-            border-radius: 8px;
-            background: #1e293b;
-            color: #cbd5e1;
-            cursor: pointer;
-            transition: background-color 150ms, color 150ms;
-        }
-        .copy-btn:hover { background: #334155; color: #fff; }
-        .copy-btn svg { width: 20px; height: 20px; }
-        .copy-btn .check { display: none; color: var(--emerald); }
-        .copy-btn.copied .copy { display: none; }
-        .copy-btn.copied .check { display: block; }
+        .copy-btn { flex-shrink: 0; min-width: 76px; padding: 0 10px; font: bold 14px Tahoma, Verdana, sans-serif; }
 
         .generate {
+            position: relative;
             width: 100%;
-            padding: 14px 24px;
-            border: 0;
-            border-radius: 12px;
-            background: linear-gradient(90deg, #2563eb, #059669);
-            color: #fff;
-            font: inherit;
-            font-size: 1.0625rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: filter 150ms, transform 100ms;
+            padding: 12px;
+            font: bold 18px 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive;
         }
-        .generate:hover { filter: brightness(1.12); }
-        .generate:active { transform: scale(0.985); }
 
-        :focus-visible { outline: 2px solid var(--emerald); outline-offset: 2px; }
+        .statusbar {
+            display: flex;
+            gap: 2px;
+            padding: 2px;
+            font-size: 12px;
+        }
+        .statusbar span {
+            flex: 1;
+            padding: 2px 6px;
+            border: 1px solid;
+            border-color: var(--bevel-mid) var(--bevel-hi) var(--bevel-hi) var(--bevel-mid);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            max-width: 560px;
+            margin: 22px auto 0;
+            padding: 0 12px;
+        }
+        .badge {
+            width: 88px;
+            height: 31px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid;
+            font: bold 8px/1.15 Verdana, Geneva, sans-serif;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            cursor: pointer;
+            image-rendering: pixelated;
+        }
+        .badge b { font-size: 11px; letter-spacing: 0; }
+        .badge:active { transform: translate(1px, 1px); }
+        .badge:focus-visible { outline: 2px dotted #ffff00; outline-offset: 2px; }
+        .bg-bear    { background: linear-gradient(#7a4a1f, #4a2a0f); color: #ffd28a; border-color: #ffd28a; }
+        .bg-notepad { background: #ffffff; color: #000080; border-color: #000080; }
+        .bg-scape   { background: linear-gradient(#003366, #0066cc); color: #fff; border-color: #99ccff; }
+        .bg-cookies { background: #f5deb3; color: #5a3200; border-color: #8b5a2b; }
+        .bg-dialup  { background: #000; color: #00ff00; border-color: #00ff00; font-family: 'Courier New', monospace; }
+        .bg-p123    { background: #cc0000; color: #fff; border-color: #ffff00; }
+        .bg-y2k     { background: linear-gradient(#c0c0c0, #808080); color: #000; border-color: #fff; }
+        .bg-cd      { background: linear-gradient(90deg, #ff99cc, #99ffff, #ffff99); color: #000; border-color: #000; }
+
+        .statusbar .lights {
+            flex-shrink: 0;
+            padding: 1px 8px;
+            font: 12px 'MS Sans Serif', Tahoma, Verdana, sans-serif;
+        }
+
+        /* ---------- junk at the bottom. every good homepage has junk at the bottom ---------- */
+        .counter-wrap { margin-top: 28px; font-family: 'Times New Roman', Times, serif; }
+        .counter {
+            display: inline-block;
+            margin: 6px 0;
+            padding: 3px;
+            background: #000;
+            border: 2px inset #888;
+        }
+        .counter span {
+            display: inline-block;
+            width: 18px;
+            margin: 0 1px;
+            background: #111;
+            color: #00ff00;
+            font: bold 18px 'Courier New', monospace;
+            text-shadow: 0 0 4px #00ff00;
+        }
 
         footer {
-            text-align: center;
-            font-size: 0.8125rem;
-            line-height: 1.5;
-            color: var(--muted);
+            margin: 18px 12px 0;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 0.85rem;
+            color: #aaaaff;
+            line-height: 1.6;
         }
 
         @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after { animation: none !important; transition: none !important; }
+            *, *::before, *::after { animation: none !important; }
         }
     </style>
 </head>
 <body>
-    <main class="card">
-        <header>
-            <h1>Password generator</h1>
-            <p>Strong passwords. Questionable vocabulary.</p>
-        </header>
+    <!-- the title. yes its rainbow. no i will not change it -->
+    <h1>Bear's Password Page</h1>
+    <p class="tagline">Strong passwords. Questionable vocabulary.</p>
 
-        <div class="bear-row">
-            <button id="bear" class="bear" type="button" aria-label="Poke the bear">ʕ•ᴥ•ʔ</button>
-            <div id="bubble" class="bubble">Hi. I make passwords. You use each one once. Got it? Good, now don't screw it up.</div>
+    <!-- bear.exe. the minimize button does not minimize. the bear does not minimize -->
+    <div class="window">
+        <div class="titlebar">
+            <span>🐻 BEAR.EXE</span>
+            <div class="titlebar-buttons">
+                <button type="button" data-bear="minimize" aria-label="Minimize">_</button>
+                <button type="button" data-bear="maximize" aria-label="Maximize">□</button>
+                <button type="button" data-bear="close" aria-label="Close">×</button>
+            </div>
         </div>
 
-        <div class="readout">
-            <div class="readout-text">
-                <div id="password" class="password" aria-live="polite"></div>
-                <div class="translation">Reads as: <em id="translation"></em></div>
+        <div class="window-body">
+            <!-- bear goes here. bear says rude stuff. not my fault -->
+            <div class="bear-box">
+                <button id="bear" class="bear" type="button" aria-label="Poke the bear">ʕ•ᴥ•ʔ</button>
+                <div class="bear-says"><b>Bear says:</b> <span id="bubble">Hi. I make passwords. You use each one once. Got it? Good, now don't screw it up.</span></div>
             </div>
 
-            <button id="copy-btn" class="copy-btn" type="button" title="Copy password" aria-label="Copy password">
-                <svg class="copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            <div>
+                <!-- ur password shows up here. dont screenshot it and post it on myspace -->
+                <div class="label">Ur new password:</div>
+                <div class="pw-row">
+                    <div class="pw-box">
+                        <div id="password" class="password" aria-live="polite"></div>
+                        <div class="translation">Reads as: <em id="translation"></em></div>
+                    </div>
+                    <button id="copy-btn" class="w95 copy-btn" type="button">Copy</button>
+                </div>
+            </div>
+
+            <!-- the big button. pressing it 50 times does something. dont -->
+            <button id="generate-btn" class="w95 generate" type="button">
+                Gimme another one!
             </button>
         </div>
 
-        <button id="generate-btn" class="generate" type="button">Gimme another one</button>
+        <div class="statusbar">
+            <span id="status">Ready.</span>
+            <span>Passwords made: <b id="count">1</b></span>
+            <button id="lights" class="w95 lights" type="button">🌙 Lights off</button>
+        </div>
+    </div>
 
-        <footer>Made on your device. Nothing is sent, nothing is saved.<br>You are, however, being judged as hell. ʕ – ᴥ – ʔ</footer>
-    </main>
+    <!-- 100% real visitor counter (lie) -->
+    <div class="counter-wrap">
+        You are visitor number:<br>
+        <span id="counter" class="counter" aria-label="Visitor counter"></span><br>
+        <small>(counter is broken, plz ignore)</small>
+    </div>
+
+    <!-- 88x31 buttons. the cupholder one does not give u a cupholder. sorry -->
+    <div class="badges">
+        <button class="badge bg-bear" type="button" data-badge="bear"><b>ʕ•ᴥ•ʔ</b>bear powered</button>
+        <button class="badge bg-notepad" type="button" data-badge="notepad">made with<b>NOTEPAD</b></button>
+        <button class="badge bg-scape" type="button" data-badge="scape"><b>Bearscape</b>now!</button>
+        <button class="badge bg-cookies" type="button" data-badge="cookies"><b>🍪 NO</b>cookies</button>
+        <button class="badge bg-dialup" type="button" data-badge="dialup"><b>56K</b>dial-up friendly</button>
+        <button class="badge bg-p123" type="button" data-badge="p123"><b>NO</b>password123 zone</button>
+        <button class="badge bg-y2k" type="button" data-badge="y2k"><b>Y2K</b>compliant</button>
+        <button class="badge bg-cd" type="button" data-badge="cd"><b>💿 FREE</b>cupholder!!</button>
+    </div>
+
+    <!-- footer. legally required to say 1997 -->
+    <footer>
+        Best viewed in Netscape Navigator 4.0 at 800×600. <a href="#" data-bear="guestbook">Sign my guestbook</a><br>
+        Made on your device. Nothing is sent, nothing is saved.<br>
+        You are, however, being judged as hell. ʕ – ᴥ – ʔ<br>
+        © 1997 Bear Industries. All rights reserved. Probably.
+    </footer>
 
     <script>
     const ADVERBS = [
@@ -281,7 +446,8 @@
         "zealously"
     ];
 
-    // Adjective and animal lists adapted from the coolname package (BSD 2-Clause licence).
+    // adjective + animal lists borrowed from the coolname package (bsd 2-clause licence, see LICENSE-coolname).
+    // thank u coolname people. u are cool
     const ADJECTIVES = [
         "abiding", "able", "aboriginal", "abstract", "academic", "accelerated", "accomplished",
         "accurate", "acoustic", "acrid", "active", "adamant", "adaptable", "adept", "admirable",
@@ -444,20 +610,24 @@
         "zebu"
     ];
 
+    // the leet speak table. h4ck3r m0d3 engaged
     const LEET = { a: '@', e: '3', i: '!', o: '0', s: '5', g: '9' };
+    // symbols that go between the words. picked by vibes
     const SEPARATORS = ['-', '=', '+', '!', '?', '$', '*', '&', '~', '^'];
+    // some websites cry if ur password is longer than 30 so we stop at 30
     const MAX_LENGTH = 30;
 
-    // Uniform random integer in [0, max) from the browser's secure generator.
+    // random number from the browsers crypto thing. NOT math.random, that one is a snitch
     function randomInt(max) {
-        const limit = Math.floor(0x100000000 / max) * max; // reject to avoid modulo bias
+        const limit = Math.floor(0x100000000 / max) * max; // throws out unlucky numbers so its fair. math is weird
         const buf = new Uint32Array(1);
         do { crypto.getRandomValues(buf); } while (buf[0] >= limit);
         return buf[0] % max;
     }
     const pick = (list) => list[randomInt(list.length)];
 
-    // Each letter: 3 in 4 chance of a symbol swap if it has one, otherwise random upper/lower case.
+    // each letter: 3 in 4 chance it turns into a symbol (if it can), otherwise random caps.
+    // basically makes ur password look like it got hit by a truck
     function scramble(word) {
         let out = '';
         for (const ch of word) {
@@ -467,8 +637,8 @@
         return out;
     }
 
-    // Adverb + adjective + animal, e.g. "suspiciously fluffy otter", joined by one random symbol.
-    // Combos longer than MAX_LENGTH are redrawn, so every allowed combo stays equally likely.
+    // adverb + adjective + animal, like "suspiciously fluffy otter". one random symbol in between.
+    // too long? reroll the whole thing. no cheating by chopping words off
     function makePassword() {
         let words;
         do {
@@ -478,7 +648,9 @@
         return { password: words.map(scramble).join(sep), words };
     }
 
-    // ---------- The bear's personality (cosmetic only, uses Math.random) ----------
+    // ---------- the bears personality. uses math.random bc its just jokes, not passwords ----------
+    // the bear does not represent the views of anyone. the bear barely represents the views of the bear
+    // bear faces. took longer to find these than to write the actual generator
     const FACES = {
         neutral:  'ʕ•ᴥ•ʔ',
         happy:    'ʕ ᵔᴥᵔ ʔ',
@@ -497,6 +669,7 @@
     const aOrAn = (phrase) => (/^[aeiou]/.test(phrase) ? 'an ' : 'a ') + phrase;
     const cap = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
+    // stuff the bear says when u make a new password. sorry mom
     const NEW_LINES = [
         (p) => `Behold: ${aOrAn(p)}. You're fucking welcome.`,
         (p) => `Somewhere out there, ${aOrAn(p)} is judging your shitty old passwords.`,
@@ -521,6 +694,7 @@
         `Copied. Use it before I change my damn mind.`,
     ];
 
+    // the bear gets mad if u click too much. this is a feature
     const MILESTONES = {
         10:  ['meh',     `That's ten. Commitment issues much?`],
         25:  ['annoyed', `Twenty-five. They're all good, for fuck's sake. Pick one.`],
@@ -537,6 +711,14 @@
         ['wink',    `Psst. Different password on every site. Or else.`],
     ];
 
+    // what happens when u click the fake window buttons and the guestbook
+    const EXTRA_LINES = {
+        minimize:  ['annoyed', `Minimize me? I'm a bear. I don't fucking minimize.`],
+        maximize:  ['proud',   `I'm already at maximum bear, dumbass.`],
+        close:     ['shocked', `Close me?! After everything we've been through? Hell no.`],
+        guestbook: ['sad',     `Guestbook's closed. Somebody wrote their actual password in it. Dumbass.`],
+    };
+
     const els = {
         password: document.getElementById('password'),
         translation: document.getElementById('translation'),
@@ -544,6 +726,8 @@
         generateBtn: document.getElementById('generate-btn'),
         bear: document.getElementById('bear'),
         bubble: document.getElementById('bubble'),
+        status: document.getElementById('status'),
+        count: document.getElementById('count'),
     };
 
     const flavour = (list) => list[Math.floor(Math.random() * list.length)];
@@ -551,7 +735,7 @@
     let count = 0;
     let lastLine = -1;
     let idleTimer;
-    let copiedTimer;
+    let statusTimer;
 
     function say(face, text) {
         els.bear.textContent = FACES[face] || FACES.neutral;
@@ -562,6 +746,13 @@
         resetIdle();
     }
 
+    function setStatus(text) {
+        els.status.textContent = text;
+        clearTimeout(statusTimer);
+        statusTimer = setTimeout(() => { els.status.textContent = 'Ready.'; }, 2500);
+    }
+
+    // if u leave for a minute the bear falls asleep. same tbh
     function resetIdle() {
         clearTimeout(idleTimer);
         idleTimer = setTimeout(() => {
@@ -581,9 +772,6 @@
             frag.appendChild(span);
         }
         els.password.replaceChildren(frag);
-        els.password.classList.remove('fresh');
-        void els.password.offsetWidth;
-        els.password.classList.add('fresh');
         els.translation.textContent = words.join(' ');
         return words.join(' ');
     }
@@ -591,6 +779,8 @@
     function generate() {
         const phrase = show(makePassword());
         count++;
+        els.count.textContent = count + 1;
+        setStatus('Password generated. Woo!');
         if (MILESTONES[count]) {
             say(...MILESTONES[count]);
             return;
@@ -601,6 +791,7 @@
         say(flavour(NEW_FACES), NEW_LINES[i](phrase));
     }
 
+    // copy button. has a backup plan for weird old browsers bc i care
     async function writeClipboard(text) {
         if (navigator.clipboard && window.isSecureContext) {
             return navigator.clipboard.writeText(text);
@@ -620,18 +811,78 @@
     els.copyBtn.addEventListener('click', async () => {
         try {
             await writeClipboard(current);
-            els.copyBtn.classList.add('copied');
-            clearTimeout(copiedTimer);
-            copiedTimer = setTimeout(() => els.copyBtn.classList.remove('copied'), 1600);
+            setStatus('Copied 2 clipboard!');
             say('hug', flavour(COPY_LINES));
         } catch {
+            setStatus('Copy failed. Blame Microsoft.');
             say('sad', `Your stupid browser won't let me copy. Select it and copy it yourself, you've got hands.`);
         }
     });
 
+    // lights on / lights off. saves ur choice in ur own browser, nobody else sees it
+    const lightsBtn = document.getElementById('lights');
+    function syncLightsLabel() {
+        const dark = document.documentElement.dataset.theme === 'dark';
+        lightsBtn.textContent = dark ? '☀ Lights on' : '🌙 Lights off';
+    }
+    lightsBtn.addEventListener('click', () => {
+        const root = document.documentElement;
+        const dark = root.dataset.theme !== 'dark';
+        if (dark) root.dataset.theme = 'dark';
+        else delete root.dataset.theme;
+        try { localStorage.setItem('bear-theme', dark ? 'dark' : 'light'); } catch {}
+        syncLightsLabel();
+        if (dark) say('happy', `Ahh, much better. Bears are nocturnal, dumbass.`);
+        else say('shocked', `Lights on?! My fucking retinas. Hope you're wearing sunglasses.`);
+    });
+    syncLightsLabel();
+
     els.generateBtn.addEventListener('click', generate);
     els.bear.addEventListener('click', () => say(...flavour(POKE_LINES)));
 
+    // what the bear says when u click the little buttons
+    const BADGE_LINES = {
+        bear:    ['proud',   `Damn right it's bear powered. No humans, no AI, just paws.`],
+        notepad: ['meh',     `Made with Notepad. No frameworks. No build step. No regrets.`],
+        scape:   ['wink',    `Bearscape Navigator 4.0. Way better than that other one.`],
+        cookies: ['sad',     `No cookies. I ate them all. Nobody's tracking you here.`],
+        dialup:  ['happy',   `Whole page is about 30 KB. Loads before your modem finishes screaming.`],
+        p123:    ['annoyed', `This is a password123-free zone. Use that shit somewhere else.`],
+        y2k:     ['proud',   `Survived Y2K. Ready for the 2038 problem too. Probably.`],
+    };
+
+    document.querySelectorAll('[data-badge]').forEach((el) => {
+        el.addEventListener('click', () => {
+            const key = el.dataset.badge;
+            if (key === 'cd') {
+                setStatus('CD eject failed: not 1999');
+                say('shocked', `Ejecting your CD drive... nope. Browsers stopped allowing that shit decades ago. Also, who the hell still has a CD drive?`);
+            } else {
+                say(...BADGE_LINES[key]);
+            }
+            els.bear.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    });
+
+    document.querySelectorAll('[data-bear]').forEach((el) => {
+        el.addEventListener('click', (e) => {
+            e.preventDefault();
+            say(...EXTRA_LINES[el.dataset.bear]);
+            if (el.closest('footer')) els.bear.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    });
+
+    // visitor counter. its fake. if you actually have this many visitors pls email me
+    const visitor = String(Math.floor(Math.random() * 999999)).padStart(7, '0');
+    const counterEl = document.getElementById('counter');
+    for (const digit of visitor) {
+        const span = document.createElement('span');
+        span.textContent = digit;
+        counterEl.appendChild(span);
+    }
+    counterEl.setAttribute('aria-label', `Visitor counter: ${Number(visitor)}`);
+
+    // go go go
     show(makePassword());
     resetIdle();
     </script>
