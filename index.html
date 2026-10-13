@@ -4,6 +4,38 @@
     made by hand in notepad at 3am. no frameworks were harmed
     if ur reading the source code: hi. respect. go outside
 -->
+<!--
+    ===== SECRET LIST (for me, the webmaster, bc i keep forgetting) =====
+    if ur not me: spoilers below. scroll away. or dont, im a comment not a cop
+
+     1. konami code          press up up down down left right left right b a  -> chaos mode + table flip
+     2. hunter2              click the page, type hunter2                     -> "all i see is *******"
+     3. password123          click the page, type password123                 -> bear loses it
+     4. password trap        open "check ur current password's strength", type anything -> bear yells, box gets wiped
+     5. blue screen          click the x on bear.exe 5 times                  -> fake windows bsod, any key / tap to fix
+     6. window buttons       click _ or the square on bear.exe                -> bear refuses to minimize / maximize
+     7. visitor counter      click the green counter                          -> slot machine spin
+     8. poke the bear        click the bear face in the yellow box            -> complaints
+     9. free cupholder       click the cd button in the 88x31 row             -> cd drive "ejects". it doesnt
+    10. guestbook            click "sign my guestbook" in the footer          -> closed, someone wrote their password in it
+    11. constellation        click ursa major (left on big screens, bottom on phones) -> star facts + sagan
+    12. moon                 click the moon (top right)                       -> phase line / moon facts
+    13. table flip           press "gimme another one!" 50 times (also 10, 25, 51, 100) -> bear gets fed up
+    14. sleepy bear          dont touch anything for 1 minute                 -> bear falls asleep
+    15. sad tab              switch to another tab and look at the tab title  -> "come back..."
+    16. starlink             wait for the grey dotted train at the top, click its label -> iau page on satellites. fuck you elon
+
+    bonus, not hinted anywhere:
+     - full moon: the bear notices by himself a few secs after loading on full moon nights
+     - browser console (f12): ascii bear tells u to get out + drops hints
+     - every 88x31 button + the lights button has its own bear line
+
+    not a secret, just there:
+     - 404.html = the "page got eaten by a bear" page for broken links
+
+    shooting stars fly by every now and then. catch one = a hint for one of the 16.
+    "need another hint?" under it = the obvious version.
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -19,8 +51,8 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="Bear's Password Page ʕ•ᴥ•ʔ">
     <meta property="og:description" content="Strong passwords. Questionable vocabulary. A bear with anger issues makes them in your browser.">
-    <meta property="og:url" content="https://allangabrielsch.github.io/PasswordGenerator/">
-    <meta property="og:image" content="https://allangabrielsch.github.io/PasswordGenerator/og-image.png">
+    <meta property="og:url" content="https://YOUR-USERNAME.github.io/YOUR-REPO/">
+    <meta property="og:image" content="https://YOUR-USERNAME.github.io/YOUR-REPO/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
@@ -69,6 +101,7 @@
             --bear-border: #ff9900;
             --bear-face: #663300;
             --bear-label: #cc0000;
+            --bubble-link: #0000cc;
             --gerald-bg: #bfe3ff;
         }
         :root[data-theme="dark"] {
@@ -87,6 +120,7 @@
             --bear-border: #a86400;
             --bear-face: #e7b98a;
             --bear-label: #ff7a7a;
+            --bubble-link: #8fb8ff;
             --gerald-bg: #1e2a1e;
         }
 
@@ -228,6 +262,8 @@
         }
         .bear-says { flex: 1; font-size: 0.95rem; line-height: 1.4; }
         .bear-says b { color: var(--bear-label); }
+        .bear-says a { color: var(--bubble-link); }
+        .star-hint a { color: #99ccff; }
 
         /* ---------- the actual point of this website ---------- */
         .label { font-weight: bold; margin-bottom: 4px; }
@@ -269,6 +305,7 @@
 
         .statusbar {
             display: flex;
+            flex-direction: column;
             gap: 2px;
             padding: 2px;
             font-size: 12px;
@@ -282,6 +319,10 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        /* the status message gets the room, the counter only takes what it needs */
+        .statusrow { display: flex; gap: 2px; }
+        .statusbar #status, .statusbar #star-status { flex: 1 1 auto; min-width: 0; }
+        .statusbar .made { flex: 0 0 auto; }
 
         .badges {
             display: flex;
@@ -311,7 +352,6 @@
         .badge:active { transform: translate(1px, 1px); }
         .badge:focus-visible { outline: 2px dotted #ffff00; outline-offset: 2px; }
         .bg-bear    { background: linear-gradient(#7a4a1f, #4a2a0f); color: #ffd28a; border-color: #ffd28a; }
-        .bg-notepad { background: #ffffff; color: #000080; border-color: #000080; }
         .bg-scape   { background: linear-gradient(#003366, #0066cc); color: #fff; border-color: #99ccff; }
         .bg-cookies { background: #f5deb3; color: #5a3200; border-color: #8b5a2b; }
         .bg-dialup  { background: #000; color: #00ff00; border-color: #00ff00; font-family: 'Courier New', monospace; }
@@ -349,6 +389,9 @@
         .bg-git .git-text { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         a.badge     { text-decoration: none; box-sizing: border-box; }
         a.badge:visited { color: #fff; }
+        .bg-fck     { background: #000; color: #fff; border-color: #fff; }
+        a.bg-fck:visited { color: #fff; }
+        .bg-fck b   { font-size: 15px; letter-spacing: 0.08em; }
         .bg-cd      { background: linear-gradient(90deg, #ff99cc, #99ffff, #ffff99); color: #000; border-color: #000; }
 
         /* ---------- ursa major. the big bear. our ancestor. click her ---------- */
@@ -390,7 +433,8 @@
             .constellation { position: absolute; top: 140px; left: calc(50% - 630px); margin: 0; }
         }
 
-        .statusbar .lights {
+        .statusbar .lights,
+        .statusbar .wish {
             flex-shrink: 0;
             padding: 1px 8px;
             font: bold 12px var(--comic);
@@ -398,6 +442,7 @@
 
         /* ---------- junk at the bottom. every good homepage has junk at the bottom ---------- */
         .counter-wrap { margin-top: 28px; }
+        footer .psst { color: #ffff99; }
         .counter {
             display: inline-block;
             margin: 6px 0;
@@ -450,6 +495,144 @@
             .moon { top: 6px; right: 6px; }
             .moon canvas { width: 46px; height: 46px; }
         }
+
+        /* ---------- shooting stars. catch one for a hint ---------- */
+        /* page content sits above the shooting stars, so they only fly through the sky */
+        h1, .tagline, .window, .counter-wrap, .badges, footer { position: relative; z-index: 1; }
+        /* the full-width text blocks let clicks through to the sky, only their buttons/links catch clicks */
+        h1, .tagline, .counter-wrap, .badges, footer { pointer-events: none; }
+        .counter, .badge, footer a { pointer-events: auto; }
+        .shooting-star {
+            position: fixed;
+            z-index: 0;
+            width: 80px;
+            height: 80px;
+            margin: -40px 0 0 -40px;     /* centre the big hitbox on the star's head */
+            padding: 0;
+            background: none;
+            border: 0;
+            cursor: pointer;
+        }
+        .shooting-star.front { z-index: 40; }
+        .shooting-star .tail {
+            position: absolute;
+            right: 40px;
+            top: 39px;
+            width: 90px;
+            height: 2px;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0), #ffffff);
+            transform-origin: right center;
+        }
+        .shooting-star .head {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: #ffffcc;
+            font-size: 16px;
+            line-height: 1;
+            text-shadow: 0 0 6px #ffffff, 0 0 12px #ffff99;
+        }
+        .shooting-star.caught .tail { display: none; }
+        .shooting-star.caught .head { animation: caught-pop 450ms ease-out forwards; }
+        @keyframes caught-pop {
+            50%  { transform: translate(-50%, -50%) scale(2.4); }
+            100% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+        }
+
+        /* starlink. deliberately ugly. no glow, no sparkle, no explosion. just sad grey dots.
+           it flies in FRONT so u can actually read the callout, but only through empty sky,
+           so it never covers the title or the bear's window */
+        .starlink {
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 40;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+        }
+        .starlink .sat {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 3px;
+            background: #8a8a8a;
+            animation: sat-flicker 0.9s steps(2) infinite;
+        }
+        .starlink .sat:nth-child(odd) { animation-delay: -0.45s; }
+        @keyframes sat-flicker { 50% { opacity: 0.45; } }
+        .starlink .label {
+            position: absolute;
+            left: 0;
+            top: 0;
+            padding: 1px 6px;
+            white-space: nowrap;
+            background: rgba(40, 40, 40, 0.85);
+            border: 1px solid #666;
+            color: #ff6b6b;
+            font: bold 12px 'Courier New', Courier, monospace;
+            pointer-events: auto;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .starlink .label:hover { text-decoration: underline; }
+
+        /* the little explosion at the end of every shooting star */
+        /* on phones the window fills the screen, so stars fly in front of it there or nobody would see them */
+        @media (max-width: 700px) {
+            .shooting-star, .spark { z-index: 40 !important; }
+        }
+        .spark {
+            position: fixed;
+            z-index: 40;           /* sparks always show, even in the rare case they land on the window */
+            pointer-events: none;
+            margin: -8px 0 0 -7px;
+            font-size: 14px;
+            line-height: 1;
+            text-shadow: 0 0 4px currentColor;
+        }
+
+        /* the hint note that appears in the sky where u caught the star */
+        .star-hint {
+            position: fixed;
+            z-index: 60;
+            max-width: 250px;
+            padding: 8px 26px 8px 10px;
+            background: rgba(0, 0, 40, 0.88);
+            border: 1px dashed rgba(200, 210, 255, 0.6);
+            color: #e6ecff;
+            font: 13px/1.45 var(--comic);
+            text-align: left;
+            opacity: 0;
+            transform: translateY(4px);
+            transition: opacity 300ms, transform 300ms;
+        }
+        .star-hint.show { opacity: 1; transform: translateY(0); }
+        .star-hint .more {
+            display: inline-block;
+            margin-top: 4px;
+            padding: 0;
+            background: none;
+            border: 0;
+            color: #99ccff;
+            font: inherit;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .star-hint .close {
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            padding: 2px 4px;
+            background: none;
+            border: 0;
+            color: #aab;
+            font: 14px/1 var(--comic);
+            cursor: pointer;
+        }
+        .star-hint .extra { color: #ffffcc; }
 
         /* ---------- the password checker trap. it checks nothing. it is a trap ---------- */
         .trap { font-size: 13px; }
@@ -593,10 +776,17 @@
             </details>
         </div>
 
+        <!-- two status bars: top one is for passwords, bottom one is for the sky -->
         <div class="statusbar">
-            <span id="status">Ready.</span>
-            <span>Passwords made: <b id="count">1</b></span>
-            <button id="lights" class="w95 lights" type="button">🌙 Lights off</button>
+            <div class="statusrow">
+                <span id="status">Ready.</span>
+                <span class="made">Passwords made: <b id="count">1</b></span>
+                <button id="lights" class="w95 lights" type="button">🌙 Lights off</button>
+            </div>
+            <div class="statusrow">
+                <span id="star-status">Sky: clear.</span>
+                <button id="wish" class="w95 wish" type="button" title="Launch a shooting star. Catch it for a hint!">🌠 Wish</button>
+            </div>
         </div>
     </div>
 
@@ -613,7 +803,6 @@
              if it doesnt, change REPO_URL in the script at the bottom -->
         <a id="repo-badge" class="badge bg-git" href="https://github.com/" target="_blank" rel="noopener"><img class="bear-sprite light-only" alt="" src="data:image/gif;base64,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"><img class="bear-sprite dark-only" alt="" src="data:image/gif;base64,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"><span class="git-text">view the<b>SOURCE</b>on github</span></a>
         <button class="badge bg-bear" type="button" data-badge="bear"><b>ʕ•ᴥ•ʔ</b>bear powered</button>
-        <button class="badge bg-notepad" type="button" data-badge="notepad">made with<b>NOTEPAD</b></button>
         <button class="badge bg-scape" type="button" data-badge="scape"><b>Bearscape</b>now!</button>
         <button class="badge bg-cookies" type="button" data-badge="cookies"><b>🍪 NO</b>cookies</button>
         <button class="badge bg-dialup" type="button" data-badge="dialup"><b>56K</b>dial-up friendly</button>
@@ -622,14 +811,17 @@
         <button class="badge bg-cd" type="button" data-badge="cd"><b>💿 FREE</b>cupholder!!</button>
         <!-- fat bear week. vote for the fattest bear in katmai. this is real democracy -->
         <a class="badge bg-fat" href="https://explore.org/fat-bear-week" target="_blank" rel="noopener" title="Fat Bear Week: vote for the chonkiest bear in Katmai"><img alt="" src="data:image/gif;base64,R0lGODlhHgAdAIMAAP////DUquiqgMCITqBmMoRSJn5OIiwYCCgWCP8A/yQSBgAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJPAAJACwAAAAAHgAdAAAI5wATCBxIsKDBgwgTKlzIsKHDhxAjShQIoCKAiQkvIkTAsSFHBBoPIiBAEsHCkQQshhyIkiSBjzBhuiwpkoAAASVn6kR582XNnjqDuuxp0mBLAgMGCF1a1ChJpUuFNi14NCrTmi4VkNQ6kytXmlSrKvjalezLjgJHVnUZoG1bpjRHFlhLMsCBuwGYFihwdi8CA0HdHnAb1ACCvXMJIP4bePDgwocRK0Y81wBgqyQtR6a82e9Hy6BDG+ZI2XNptTFTo+w8N8HmtZ1hL2bJkW3el5xtl0RLsPZM1ol/TzUKs/RimA9Vx0wYEAAh+QQJPAAJACwAAAAAHgAdAIP////w1KroqoDAiE6gZjKEUiZ+TiIsGAgoFgj/AP8kEgYAAAAAAAAAAAAAAAAAAAAI5wATCBxIsKDBgQASJjzIsCFBAA4jHoQosaJAihYlKlyYsaNHjwhCVgyJwCECAihLmkRJQKXBkyxbkpxJMmbLgycFCEhpMyZMnTdfEgDas+jQnS4JwkQ5YIDRokmVMn0KleFSqkajCryqAGXXmF+/psRpU4FYsGeDKr0aM4Bbt1lFbm1pNMCBuwGyjj1ZAIGBnm8PvO1pAEGBAjIP9/1r065jwoYV85VsgDHWypEVE1AsmWTlz6ALh+QsmfRJmqhDpjSdIDPblpxfux5oeClc2JJZ3q5dsKZP0n1tkrRKE/hh1BZT02wYEAAh+QQJPAAKACwAAAAAHgAdAIP////w1KroqoCqvvDAiE6gZjKEUiZ+TiIsGAgoFgj/AP8kEgYAAAAAAAAAAAAAAAAI6gAVCBxIsKBBggMSJjzIsKHDhxAjSpxIseJDABgBWHSokWGCjxE/Juh4MEGBkwkemiyQkeTAlScLiJw5MybKkgUECEBps+dKnTJxAu1JNCbQlAZhFiBAoKhTpElPNnVaFGpBpVSf4oy54GRXm1+/3ryKdYFYsGdlghRoEmvMAHDhPr1p0oDbkwEQ6A3w1IABtX4THCAaF0FcogcS+LVbYLFgwoYNI1a8uPFiuwcGZz2ZmfJlz4FFZh5NOvHHy6FRt6XJeiVouwo8uwU92/HLj2/5yvycG+VagrhtvmYs3GrSmagdz5zYmmbDgAAh+QQJPAAJACwAAAAAHgAdAIP////w1KroqoDAiE6gZjKEUiZ+TiIsGAgoFgj/AP8kEgYAAAAAAAAAAAAAAAAAAAAI5wATCBxIsKDBgQASJjzIsCFBAA4jHoQosaJAihYlKlyYsaNHjwhCVgyJwCECAihLmkRJQKXBkyxbkpxJMmbLgycFCEhpMyZMnTdfEgDas+jQnS4JwkQ5YIDRokmVMn0KleFSqkajCryqAGXXmF+/psRpU4FYsGeDKr0aM4Bbt1lFbm1pNMCBuwGyjj1ZAIGBnm8PvO1pAEGBAjIP9/1r065jwoYV85VsgDHWypEVE1AsmWTlz6ALh+QsmfRJmqhDpjSdIDPblpxfux5oeClc2JJZ3q5dsKZP0n1tkrRKE/hh1BZT02wYEAA7"><span class="git-text"><b>FAT</b><b>BEAR</b>week!!</span></a>
+        <!-- fckmsk. says what it says -->
+        <a class="badge bg-fck" href="https://www.fuckmusk.org/" target="_blank" rel="noopener" title="fuckmusk.org"><b>FCKMSK</b></a>
     </div>
 
     <!-- footer. legally required to say 1997 -->
     <footer>
+        <span class="psst">✦ Catch a shooting star for a secret hint ✦</span><br>
         Best viewed in Netscape Navigator 4.0 at 800×600. <a href="#" data-bear="guestbook">Sign my guestbook</a><br>
         Made on your device. Nothing is sent, nothing is saved.<br>
         You are, however, being judged as hell. ʕ – ᴥ – ʔ<br>
-        © 1997 Bear Industries. All rights reserved. Probably.
+        © 1997 Ursidae Ltd. Members of Carnivora (mostly. Pandas eat bamboo, don’t ask).
     </footer>
 
     <!-- ursa major, the great bear. real star positions, roughly. click for space wisdom -->
@@ -1021,19 +1213,38 @@
     let idleTimer;
     let statusTimer;
 
-    function say(face, text) {
+    // link is optional: { url, label } gets tacked on the end as a real link
+    function say(face, text, link) {
         els.bear.textContent = FACES[face] || FACES.neutral;
         els.bubble.textContent = text;
+        if (link) {
+            const a = document.createElement('a');
+            a.href = link.url;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.textContent = link.label;
+            els.bubble.append(' ', a);
+        }
         els.bear.classList.remove('bounce');
         void els.bear.offsetWidth;
         els.bear.classList.add('bounce');
         resetIdle();
     }
 
+    const READY_TEXT = 'Ready.';
+    // the sky status bar. same idea as setStatus but for shooting stars
+    const SKY_IDLE = 'Sky: clear.';
+    const starStatusEl = document.getElementById('star-status');
+    let starStatusTimer;
+    function setStarStatus(text, ms = 2500) {
+        starStatusEl.textContent = text;
+        clearTimeout(starStatusTimer);
+        starStatusTimer = setTimeout(() => { starStatusEl.textContent = SKY_IDLE; }, ms);
+    }
     function setStatus(text) {
         els.status.textContent = text;
         clearTimeout(statusTimer);
-        statusTimer = setTimeout(() => { els.status.textContent = 'Ready.'; }, 2500);
+        statusTimer = setTimeout(() => { els.status.textContent = READY_TEXT; }, 2500);
     }
 
     // if u leave for a minute the bear falls asleep. same tbh
@@ -1127,7 +1338,6 @@
     // what the bear says when u click the little buttons
     const BADGE_LINES = {
         bear:    ['proud',   `Damn right it's bear powered. No humans, no AI, just paws.`],
-        notepad: ['meh',     `Made with Notepad. No frameworks. No build step. No regrets.`],
         scape:   ['wink',    `Bearscape Navigator 4.0. Way better than that other one.`],
         cookies: ['sad',     `No cookies. I ate them all. Nobody's tracking you here.`],
         dialup:  ['happy',   `Whole page is under 100 KB, font included. Loads before your modem finishes screaming.`],
@@ -1420,7 +1630,7 @@
         typed = (typed + key).slice(-12);
         if (typed.endsWith('hunter2')) {
             typed = '';
-            say('wink', `hunter2? All I see is *******. Classic.`);
+            say('wink', `hunter2? All I see is *******. Classic.`, { url: 'https://knowyourmeme.com/memes/hunter2', label: '(never heard of it? here\'s the meme)' });
         } else if (typed.endsWith('password123')) {
             typed = '';
             say('flip', `PASSWORD123?! In MY house?! Get out. GET OUT.`);
@@ -1448,6 +1658,306 @@
    ↑ ↑ ↓ ↓ ← → ← → B A
    and maybe type hunter2.
 `, 'font: 14px monospace; color: #c08040;');
+
+    // ---------- shooting stars ----------
+    // every now and then one flies across the sky. catch it = a hint for one of the secrets.
+    // the hint shows up right there in the sky, not from the bear, he talks enough already
+    const HINTS = [
+        ['Up up, down down, left right, left right... gamers know the rest.', 'Press ↑ ↑ ↓ ↓ ← → ← → B A on your keyboard.'],
+        ['Type the most famous password on the internet. The one that shows up as stars.', 'Click anywhere on the page, then type: hunter2 (needs a keyboard)', 'https://knowyourmeme.com/memes/hunter2'],
+        ['Type the worst password you can think of. Go on.', 'Click anywhere on the page, then type: password123 (needs a keyboard)'],
+        ['That password checker looks totally trustworthy. Try it.', 'Open "🔒 Check ur current password\'s strength!!" under the big button and type anything.'],
+        ['The bear can\'t be closed. Prove him wrong. Keep trying.', 'Click the × on the BEAR.EXE window five times in a row.'],
+        ['The bear\'s window has other buttons too.', 'Click the _ and □ buttons on the BEAR.EXE window.'],
+        ['The visitor counter is broken. Or is it?', 'Click the green visitor counter under the window.'],
+        ['Poke the bear. What\'s the worst that could happen?', 'Click the bear\'s face in the yellow box.'],
+        ['Who doesn\'t want a free cupholder?', 'Click the 💿 FREE CUPHOLDER button in the row of little buttons.'],
+        ['Every good homepage has a guestbook.', 'Click "Sign my guestbook" in the footer.'],
+        ['There\'s a big bear in the sky. She knows things.', 'Click the Ursa Major stars (left of the window on big screens, at the very bottom on phones).'],
+        ['The moon has opinions.', 'Click the moon in the top-right corner.'],
+        ['Make passwords. An unreasonable amount of them.', 'Press "Gimme another one!" 50 times. Something happens at 10 and 25 too.'],
+        ['Leave the bear alone for a while.', 'Don\'t touch anything for a whole minute, then look at the bear.'],
+        ['Try leaving. The bear will notice.', 'Switch to another browser tab, then look at this tab\'s title.'],
+        ['Not everything moving up there is a star. Find the ugly one.', 'Wait for the grey dotted line crawling across the top of the sky, then click its label.'],
+    ];
+    // hints come in a shuffled order so u dont get the same one twice in a row
+    let hintQueue = [];
+    function nextHint() {
+        if (!hintQueue.length) {
+            hintQueue = HINTS.map((_, i) => i);
+            for (let i = hintQueue.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [hintQueue[i], hintQueue[j]] = [hintQueue[j], hintQueue[i]];
+            }
+        }
+        return HINTS[hintQueue.pop()];
+    }
+
+    let hintNote = null;
+    let hintTimer;
+    function closeHint() {
+        clearTimeout(hintTimer);
+        if (!hintNote) return;
+        const n = hintNote;
+        hintNote = null;
+        n.classList.remove('show');
+        setTimeout(() => n.remove(), 300);
+    }
+    function showHint(x, y) {
+        closeHint();
+        const [hint, extra, link] = nextHint();
+        const n = document.createElement('div');
+        n.className = 'star-hint';
+        n.setAttribute('role', 'status');
+        const text = document.createElement('div');
+        text.textContent = '✦ ' + hint;
+        const more = document.createElement('button');
+        more.type = 'button';
+        more.className = 'more';
+        more.textContent = 'need another hint?';
+        const close = document.createElement('button');
+        close.type = 'button';
+        close.className = 'close';
+        close.setAttribute('aria-label', 'Close hint');
+        close.textContent = '×';
+        more.addEventListener('click', () => {
+            const ex = document.createElement('div');
+            ex.className = 'extra';
+            ex.textContent = '→ ' + extra;
+            if (link) {
+                const a = document.createElement('a');
+                a.href = link;
+                a.target = '_blank';
+                a.rel = 'noopener';
+                a.textContent = "(what's that?)";
+                ex.append(' ', a);
+            }
+            more.replaceWith(ex);
+            armHintTimer();
+        });
+        close.addEventListener('click', closeHint);
+        n.append(text, more, close);
+        document.body.appendChild(n);
+        // keep the note on screen
+        const w = n.offsetWidth, h = n.offsetHeight;
+        let left = Math.min(Math.max(8, x - w / 2), window.innerWidth - w - 8);
+        const top = Math.min(Math.max(8, y + 14), window.innerHeight - h - 8);
+        // dont cover the bear's window if theres room next to it
+        const win = document.querySelector('.window').getBoundingClientRect();
+        const overlaps = left < win.right && left + w > win.left && top < win.bottom && top + h > win.top;
+        if (overlaps) {
+            if (win.left - w - 12 >= 8 && x < win.left + win.width / 2) left = win.left - w - 12;
+            else if (win.right + w + 12 <= window.innerWidth - 8) left = win.right + 12;
+        }
+        n.style.left = left + 'px';
+        n.style.top = top + 'px';
+        requestAnimationFrame(() => n.classList.add('show'));
+        hintNote = n;
+        n.addEventListener('mouseenter', () => clearTimeout(hintTimer));
+        n.addEventListener('mouseleave', armHintTimer);
+        armHintTimer();
+    }
+    function armHintTimer() {
+        clearTimeout(hintTimer);
+        hintTimer = setTimeout(closeHint, 15000);
+    }
+
+    function launchShootingStar() {
+        if (document.hidden) return;
+        const vw = window.innerWidth, vh = window.innerHeight;
+        const star = document.createElement('button');
+        star.type = 'button';
+        star.className = 'shooting-star';
+        star.setAttribute('aria-label', 'Shooting star. Catch it for a hint.');
+        star.innerHTML = '<span class="tail"></span><span class="head">✦</span>';
+        // pick a path through open sky. on big screens the whole flight stays clear of the bear's
+        // window, so u can actually see (and catch) the thing. on phones they fly in front anyway
+        const win = document.querySelector('.window').getBoundingClientRect();
+        const pad = 30;
+        const avoidWindow = vw > 700;
+        const inWindow = (x, y) => x > win.left - pad && x < win.right + pad && y > win.top - pad && y < win.bottom + pad;
+        let x0, y0, dx, dy, clear = false;
+        for (let tries = 0; tries < 120; tries++) {
+            const goLeft = Math.random() < 0.5;
+            x0 = vw * (0.03 + Math.random() * 0.94);
+            y0 = vh * (0.05 + Math.random() * 0.4);
+            const dist = Math.min(420, vw * 0.5) * (0.35 + Math.random() * 0.65);
+            dx = (goLeft ? -1 : 1) * dist;
+            dy = dist * (0.35 + Math.random() * 0.8);
+            const ex = x0 + dx, ey = y0 + dy;
+            if (!(ex > 20 && ex < vw - 20 && ey > 20 && ey < vh - 20)) continue;
+            clear = true;
+            if (avoidWindow) {
+                for (let t = 0; t <= 1; t += 0.1) {
+                    if (inWindow(x0 + dx * t, y0 + dy * t)) { clear = false; break; }
+                }
+            }
+            if (clear) break;
+        }
+        // no room in the sky? then this one flies in front of everything so it's still catchable
+        if (!clear) star.classList.add('front');
+        star.style.left = x0 + 'px';
+        star.style.top = y0 + 'px';
+        setStarStatus('✦ Shooting star! Catch it for a hint!', 6700);
+        star.querySelector('.tail').style.transform = `rotate(${Math.atan2(dy, dx)}rad)`;
+        document.body.appendChild(star);
+
+        let anim;
+        let caught = false;
+        if (calmMotion) {
+            // no flying for people who asked for less motion. it just sparkles in place for a bit
+            anim = star.animate([{ opacity: 0 }, { opacity: 1, offset: 0.15 }, { opacity: 1, offset: 0.85 }, { opacity: 0 }], { duration: 7000 });
+            star.querySelector('.tail').style.display = 'none';
+        } else {
+            anim = star.animate([
+                { transform: 'translate(0, 0)', opacity: 0 },
+                { opacity: 1, offset: 0.1 },
+                { transform: `translate(${dx}px, ${dy}px)`, opacity: 1 },
+            ], { duration: 6500, easing: 'linear' });
+            // slows right down when ur mouse gets close. we're nice like that
+            star.addEventListener('pointerenter', () => { anim.playbackRate = 0.3; });
+            star.addEventListener('pointerleave', () => { anim.playbackRate = 1; });
+        }
+        // every star goes out with a bang. caught or not
+        anim.onfinish = () => {
+            if (caught) return;
+            setStarStatus('✸ It got away. Another one soon...');
+            star.remove();
+            if (!calmMotion) explode(x0 + dx, y0 + dy);
+        };
+        star.addEventListener('click', () => {
+            caught = true;
+            anim.pause();
+            const r = star.getBoundingClientRect();
+            const hx = r.left + r.width / 2, hy = r.top + r.height / 2;
+            star.classList.add('caught');
+            setTimeout(() => star.remove(), 460);
+            if (!calmMotion) explode(hx, hy);
+            showHint(hx, hy);
+            setStarStatus('✦ Caught one! Your hint is in the sky.', 4000);
+        }, { once: true });
+    }
+
+    // kaboom. a little ring of sparks flying outwards
+    function explode(x, y) {
+        const glyphs = ['✦', '✧', '·', '★', '·', '✦', '✧', '·', '★', '✦'];
+        const colours = ['#ffffcc', '#ffff66', '#ffffff', '#ff99ff', '#99ffff'];
+        const n = 12;
+        // bright flash in the middle
+        const flash = document.createElement('span');
+        flash.className = 'spark';
+        flash.textContent = '✸';
+        flash.style.color = '#ffffff';
+        flash.style.left = x + 'px';
+        flash.style.top = y + 'px';
+        document.body.appendChild(flash);
+        flash.animate([
+            { transform: 'scale(0.5)', opacity: 1 },
+            { transform: 'scale(2.6)', opacity: 0 },
+        ], { duration: 450, easing: 'ease-out' }).onfinish = () => flash.remove();
+        for (let i = 0; i < n; i++) {
+            const sp = document.createElement('span');
+            sp.className = 'spark';
+            sp.textContent = glyphs[i % glyphs.length];
+            sp.style.color = colours[i % colours.length];
+            sp.style.left = x + 'px';
+            sp.style.top = y + 'px';
+            document.body.appendChild(sp);
+            const angle = (i / n) * Math.PI * 2 + Math.random() * 0.4;
+            const r = 30 + Math.random() * 26;
+            sp.animate([
+                { transform: 'translate(0, 0) scale(1.3)', opacity: 1 },
+                { transform: `translate(${Math.cos(angle) * r}px, ${Math.sin(angle) * r + 8}px) scale(0.4)`, opacity: 0 },
+            ], { duration: 650 + Math.random() * 250, easing: 'cubic-bezier(.2,.7,.4,1)' }).onfinish = () => sp.remove();
+        }
+    }
+    const calmMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function scheduleStar(delay) {
+        setTimeout(() => { launchShootingStar(); scheduleStar(9000 + Math.random() * 9000); }, delay);
+    }
+    scheduleStar(4000 + Math.random() * 3000);   // first one comes quickly so ppl notice
+
+    // ---------- starlink ----------
+    // every now and then a train of satellites crawls across. not a star. never explodes. ruins everything
+    function launchStarlink() {
+        if (document.hidden || calmMotion) return;
+        const vw = window.innerWidth, vh = window.innerHeight;
+        const win = document.querySelector('.window').getBoundingClientRect();
+        const title = document.querySelector('h1').getBoundingClientRect();
+        const LABEL_W = 215;
+
+        // where does it fly?
+        // big screens: straight down through the empty sky beside the window, like a real train crossing overhead.
+        // small screens: there is no empty sky beside the window, so it crawls along the very top instead.
+        let x0, y0, x1, y1, labelDx, labelDy;
+        const leftRoom = win.left - 20, rightRoom = vw - win.right - 20;
+        const sides = [];
+        if (leftRoom >= LABEL_W + 40) sides.push('left');
+        if (rightRoom >= LABEL_W + 40) sides.push('right');
+        if (sides.length) {
+            const side = sides[Math.floor(Math.random() * sides.length)];
+            const minX = side === 'left' ? 16 : win.right + 24;
+            const maxX = side === 'left' ? win.left - 24 - LABEL_W - 14 : vw - LABEL_W - 30;
+            x0 = minX + Math.random() * Math.max(0, maxX - minX);
+            x1 = Math.min(Math.max(x0 + (Math.random() - 0.5) * 120, minX), maxX);
+            const down = Math.random() < 0.7;
+            y0 = down ? -20 : vh + 20;
+            y1 = down ? vh + 20 : -20;
+            labelDx = 10; labelDy = -7;
+        } else {
+            const y = Math.max(8, title.top - 14);
+            const goRight = Math.random() < 0.5;
+            x0 = goRight ? -30 : vw + 30;
+            x1 = goRight ? vw + LABEL_W + 30 : -LABEL_W - 30;
+            y0 = y; y1 = y + (Math.random() - 0.5) * 10;
+            labelDx = goRight ? -LABEL_W - 12 : 12; labelDy = -7;
+        }
+
+        const train = document.createElement('div');
+        train.className = 'starlink';
+        document.body.appendChild(train);
+
+        // the callout tag. a real link: the IAU's page on why satellite swarms are a problem for astronomy
+        const label = document.createElement('a');
+        label.className = 'label';
+        label.href = 'https://cps.iau.org/about/background/';
+        label.target = '_blank';
+        label.rel = 'noopener';
+        label.title = 'Why satellites are a problem for astronomy (IAU)';
+        label.textContent = '🛰 STARLINK. Fuck you Elon';
+        train.appendChild(label);
+        label.addEventListener('click', () => setStarStatus('🛰 Not a star. Satellites streak through telescope photos. Fuck you Elon.', 6000));
+
+        // every satellite follows the same line, one after another, like a real starlink train
+        const duration = 22000;
+        const gap = 420;
+        const n = 10 + Math.floor(Math.random() * 5);
+        const path = (dx, dy) => [
+            { transform: `translate(${x0 + dx}px, ${y0 + dy}px)` },
+            { transform: `translate(${x1 + dx}px, ${y1 + dy}px)` },
+        ];
+        let last;
+        for (let i = 0; i < n; i++) {
+            const d = document.createElement('span');
+            d.className = 'sat';
+            train.appendChild(d);
+            last = d.animate(path(0, 0), { duration, delay: i * gap, easing: 'linear', fill: 'backwards' });
+        }
+        label.animate(path(labelDx, labelDy), { duration, easing: 'linear' });
+        last.onfinish = () => train.remove();
+        setStarStatus('🛰 That\'s not a shooting star. That\'s Starlink.', 6000);
+    }
+    function scheduleStarlink(delay) {
+        setTimeout(() => { launchStarlink(); scheduleStarlink(30000); }, delay);
+    }
+    scheduleStarlink(30000);   // one every 30 seconds, like clockwork. unfortunately
+
+    // the wish button. makes a shooting star whenever u want one (max a few at once, calm down)
+    document.getElementById('wish').addEventListener('click', () => {
+        if (document.querySelectorAll('.shooting-star').length >= 4) return;
+        launchShootingStar();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeHint(); });
 
     // go go go
     show(makePassword());
