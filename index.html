@@ -116,12 +116,12 @@
         }
         body::before {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='190'%3E%3Cpath d='M30 35L31.4 38.6L35 40L31.4 41.4L30 45L28.6 41.4L25 40L28.6 38.6Z' fill='%23ffffff'/%3E%3Ccircle cx='150' cy='22' r='1.6' fill='%23ffff99'/%3E%3Cpath d='M110 114L111.7 118.3L116 120L111.7 121.7L110 126L108.3 121.7L104 120L108.3 118.3Z' fill='%23ffff66'/%3E%3Ccircle cx='60' cy='160' r='1.5' fill='%23ccccff'/%3E%3Ccircle cx='170' cy='150' r='1.3' fill='%23ffffff'/%3E%3C/svg%3E");
-            animation: twinkle 2.6s ease-in-out infinite alternate;
+            animation: twinkle 1.3s ease-in-out infinite alternate;
         }
         body::after {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cpath d='M200 55L201.4 58.6L205 60L201.4 61.4L200 65L198.6 61.4L195 60L198.6 58.6Z' fill='%23ccffff'/%3E%3Ccircle cx='40' cy='200' r='1.7' fill='%23ffffff'/%3E%3Cpath d='M90 26L91.1 28.9L94 30L91.1 31.1L90 34L88.9 31.1L86 30L88.9 28.9Z' fill='%23ffccff'/%3E%3Ccircle cx='230' cy='210' r='1.4' fill='%23ffff99'/%3E%3Cpath d='M140 175L141.4 178.6L145 180L141.4 181.4L140 185L138.6 181.4L135 180L138.6 178.6Z' fill='%23ffffff'/%3E%3Ccircle cx='20' cy='100' r='1.2' fill='%23ffffff'/%3E%3C/svg%3E");
             background-position: 37px 53px;
-            animation: twinkle 3.7s ease-in-out -1.3s infinite alternate;
+            animation: twinkle 1.85s ease-in-out -0.65s infinite alternate;
         }
         @keyframes twinkle {
             0%, 20% { opacity: 0; }
@@ -371,7 +371,7 @@
         .c-stars circle {
             fill: #ffffff;
             filter: drop-shadow(0 0 2px #ffffff);
-            animation: star-pulse 2.8s ease-in-out infinite alternate;
+            animation: star-pulse 1.4s ease-in-out infinite alternate;
             transition: fill 200ms;
         }
         @keyframes star-pulse { from { opacity: 0.55; } to { opacity: 1; } }
@@ -421,6 +421,34 @@
             font-size: 0.85rem;
             color: #aaaaff;
             line-height: 1.6;
+        }
+
+        /* ---------- the moon. real phase, worked out from today's date. click it ---------- */
+        .moon {
+            position: absolute;
+            top: 22px;
+            right: max(16px, calc(50% - 560px));
+            z-index: 5;
+            padding: 0;
+            background: none;
+            border: 0;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        .moon canvas {
+            display: block;
+            width: 78px;
+            height: 78px;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            filter: drop-shadow(0 0 10px rgba(255, 250, 200, 0.45));
+            transition: filter 200ms;
+        }
+        .moon:hover canvas { filter: drop-shadow(0 0 16px rgba(255, 250, 200, 0.8)); }
+        .moon:focus-visible { outline: 2px dotted #ffff00; outline-offset: 4px; }
+        @media (max-width: 700px) {
+            .moon { top: 6px; right: 6px; }
+            .moon canvas { width: 46px; height: 46px; }
         }
 
         /* ---------- the password checker trap. it checks nothing. it is a trap ---------- */
@@ -513,6 +541,9 @@
 </head>
 <body>
     <!-- the title. yes its rainbow. no i will not change it -->
+    <!-- the moon. drawn fresh every visit in whatever phase it's actually in -->
+    <button id="moon" class="moon" type="button" title="The moon. Click it." aria-label="The moon"><canvas id="moon-canvas" width="26" height="26"></canvas></button>
+
     <h1>Bear's Password Page</h1>
     <p class="tagline">Strong passwords. Questionable vocabulary.</p>
 
@@ -889,6 +920,7 @@
         unflip:   '┬─┬ ノʕ•ᴥ•ノʔ',
         wink:     'ʕ ´•ᴥ<ʔ',
         stars:    'ʕ ˘ᴥ˘ ʔ✧',
+        moon:     'ʕ •ᴥ•ʔ☾',
     };
 
     const aOrAn = (phrase) => (/^[aeiou]/.test(phrase) ? 'an ' : 'a ') + phrase;
@@ -908,6 +940,23 @@
         ()  => `If you write this on a sticky note, I swear to god I will find you.`,
         ()  => `Certified fresh. Not certified sane. Who gives a crap.`,
         ()  => `Another masterpiece. I should be charging for this shit.`,
+        (p) => `${cap(aOrAn(p))}. I've seen worse. I've also seen better. Mostly worse.`,
+        (p) => `Somebody, somewhere, is getting "${p}" tattooed tonight. Hopefully not you.`,
+        (p) => `Fun fact: ${aOrAn(p)} has never been in a data breach. Keep it that way.`,
+        (p) => `If ${aOrAn(p)} can't protect your email, nothing can. (Turn on two-factor too, dumbass.)`,
+        (p) => `I'd watch a nature documentary about ${aOrAn(p)}. Narrated by a very tired British man.`,
+        (p) => `"${cap(p)}." Say it out loud. Now never say it out loud again.`,
+        (p) => `${cap(aOrAn(p))}? Bold choice. I respect it.`,
+        (p) => `Legend says ${aOrAn(p)} guards the gates of your inbox. Legend is me. I said that.`,
+        ()  => `Brute-forcing this would take so long the hacker would die of old age. Good.`,
+        ()  => `I put my whole ass into this one.`,
+        ()  => `Crafted with love, rage, and about 52 bits of entropy.`,
+        ()  => `Don't email this to yourself. I'm serious. Why do people do that.`,
+        ()  => `Your password manager called. It wants this one.`,
+        ()  => `One more password and I'm unionizing.`,
+        ()  => `I didn't even look while making this one. That's how good I am. (It's random. I never look.)`,
+        ()  => `Hot take: this password is better than you deserve.`,
+        ()  => `Chef's kiss. Bear's kiss? No. Gross. Chef's kiss.`,
     ];
     const NEW_FACES = ['happy', 'proud', 'neutral', 'wink'];
 
@@ -917,6 +966,11 @@
         `Copied! Your password manager is gonna love this shit.`,
         `Done. One password, one site. Don't fuck this up.`,
         `Copied. Use it before I change my damn mind.`,
+        `Copied. Put it in a password manager, not a Notes file called "passwords".`,
+        `It's on your clipboard. Your clipboard is not a safe. Move it somewhere real.`,
+        `Copied. Now leave before I start charging rent.`,
+        `Got it. Don't paste it in the group chat. I've seen what you people do.`,
+        `Copied. If you reuse this, a bear will appear. That bear is me.`,
     ];
 
     // the bear gets mad if u click too much. this is a feature
@@ -934,6 +988,11 @@
         ['meh',     `Poking the bear. Bold strategy, dumbass.`],
         ['happy',   `Fine. One poke. That's all you get, damn it.`],
         ['wink',    `Psst. Different password on every site. Or else.`],
+        ['annoyed', `I bite, you know.`],
+        ['shocked', `Personal space! Bears have it too!`],
+        ['proud',   `You poke the bear, the bear pokes back. That's just ecology.`],
+        ['sad',     `Everyone pokes the bear. Nobody asks how the bear is doing.`],
+        ['meh',     `Keep poking. I'm getting paid by the hour. I'm not getting paid.`],
     ];
 
     // what happens when u click the fake window buttons and the guestbook
@@ -1167,6 +1226,12 @@
         `A teaspoon of neutron star weighs about a billion tons. Still lighter than the guilt of reusing passwords.`,
         `Astronauts say space smells like seared steak and hot metal. The universe is a barbecue and nobody invited us.`,
         `North of about 41 degrees latitude, the Big Dipper never sets. It just circles the pole all night, every night. Bears don't sleep. (We do. A lot. But not that one.)`,
+        `Most stars you can see without a telescope are bigger and brighter than the Sun. The small ones are too dim to notice. Like quiet people at parties.`,
+        `There are probably more stars in the universe than grains of sand on all of Earth's beaches. Nobody's counted the sand. Nobody's counted the stars either.`,
+        `Stars twinkle because Earth's air wobbles their light. In space they don't twinkle at all. They just stare. Creepy.`,
+        `Polaris isn't the brightest star. It's not even top 40. It's just in a really good spot. Location, location, location.`,
+        `The Sun is a pretty average star. Middle-aged, medium-sized, a bit warm. Basically a dad.`,
+        `The middle five Dipper stars are about 80 light-years away. In space terms they're basically neighbors. Loud ones.`,
     ];
     let lastStar = -1;
     document.getElementById('constellation').addEventListener('click', () => {
@@ -1177,6 +1242,114 @@
         say('stars', STAR_LINES[i]);
         els.bear.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
+
+    // ---------- the moon ----------
+    // phase = how far we are into the ~29.5 day cycle, counted from a known new moon (6 jan 2000)
+    const SYNODIC = 29.530588853;
+    const KNOWN_NEW_MOON = Date.UTC(2000, 0, 6, 18, 14) / 86400000;
+    const daysSince = Date.now() / 86400000 - KNOWN_NEW_MOON;
+    const moonPhase = (((daysSince % SYNODIC) + SYNODIC) % SYNODIC) / SYNODIC;   // 0 new, 0.5 full
+    const moonLit = (1 - Math.cos(2 * Math.PI * moonPhase)) / 2;
+    const moonName =
+        moonPhase < 0.034 || moonPhase >= 0.966 ? 'new moon' :
+        moonPhase < 0.216 ? 'waxing crescent' :
+        moonPhase < 0.284 ? 'first quarter' :
+        moonPhase < 0.466 ? 'waxing gibbous' :
+        moonPhase < 0.534 ? 'full moon' :
+        moonPhase < 0.716 ? 'waning gibbous' :
+        moonPhase < 0.784 ? 'last quarter' : 'waning crescent';
+
+    // draw it pixel by pixel. lit side on the right while it grows, left while it shrinks
+    // (thats how it looks from the northern hemisphere. sorry australia)
+    (function drawMoon() {
+        const cv = document.getElementById('moon-canvas');
+        const ctx = cv.getContext('2d');
+        const R = 12, C = 13;
+        const craters = [[-4, -4, 2.2], [3, 2, 2.6], [-2, 5, 1.6], [5, -5, 1.4], [-6, 2, 1.2]];
+        const k = Math.cos(2 * Math.PI * moonPhase);
+        for (let py = 0; py < 26; py++) {
+            for (let px = 0; px < 26; px++) {
+                const x = px + 0.5 - C, y = py + 0.5 - C;
+                if (x * x + y * y > R * R) continue;
+                const half = Math.sqrt(R * R - y * y);
+                const lit = moonPhase < 0.5 ? x > half * k : x < -half * k;
+                const crater = craters.some(([cx, cy, cr]) => (x - cx) ** 2 + (y - cy) ** 2 < cr * cr);
+                ctx.fillStyle = lit ? (crater ? '#d9d4b4' : '#f6f2d8') : (crater ? '#1b2448' : '#232d58');
+                ctx.fillRect(px, py, 1, 1);
+            }
+        }
+    })();
+
+    const MOON_PHASE_LINES = {
+        'new moon': [
+            `New moon. Can't see shit. Perfect night for stargazing though. Go click my constellation.`,
+            `New moon. It's right there, you just can't see it. Like my patience.`,
+            `New moon means the darkest skies of the month. The Milky Way says hi.`,
+        ],
+        'waxing crescent': [
+            `Waxing crescent. The moon's getting fatter every night. Like a Fat Bear Week contestant.`,
+            `Waxing crescent. Look west just after sunset. That little smile in the sky is judging you.`,
+        ],
+        'first quarter': [
+            `First quarter. It's called a QUARTER but it's HALF lit. Astronomers, man.`,
+            `First quarter. Grab binoculars and look along the shadow line, the craters pop like crazy. It's called the terminator. Not the robot.`,
+        ],
+        'waxing gibbous': [
+            `Waxing gibbous. "Gibbous" literally means humpbacked. Like a grizzly. The moon is a grizzly. Checks out.`,
+            `Waxing gibbous. Almost full. I'm getting nervous.`,
+        ],
+        'full moon': [
+            `FULL MOON. AWOOOOO— wait, that's wolves. Ahem. *aggressive bear noises*`,
+            `Full moon. Worst time to look at it through a telescope, everything's flat and blinding. Bright and useless, like a celebrity.`,
+            `Full moon. Rises at sunset, sets at sunrise. Pulls an all-nighter. Respect.`,
+        ],
+        'waning gibbous': [
+            `Waning gibbous. The moon is slowly going on a diet. Couldn't be me.`,
+            `Waning gibbous. Rises after dark, hangs around till morning. Night shift moon.`,
+        ],
+        'last quarter': [
+            `Last quarter. Rises around midnight, just like me raiding your trash cans.`,
+            `Last quarter. Half lit again, but the other half. The moon has two good sides.`,
+        ],
+        'waning crescent': [
+            `Waning crescent. Almost gone. Get up before sunrise and you'll catch it. Or don't, sleep is great.`,
+            `Waning crescent. The moon's last few days before it vanishes. Say something nice to it.`,
+        ],
+    };
+    const MOON_FACTS = [
+        `The moon drifts about 3.8 cm further from Earth every year. Even the moon wants space from you.`,
+        `We always see the same side of the moon. It's tidally locked. Like me to this damn window.`,
+        `The moon is about as reflective as old asphalt. It only looks bright because the sky is dark. Relatable.`,
+        `Twelve humans have walked on the moon. Zero bears. Discrimination, honestly.`,
+        `The moon has moonquakes. Some last over ten minutes. Imagine being a moon bear.`,
+        `The footprints on the moon could last millions of years. No wind, no rain, no bears to mess them up.`,
+        `The moon is slowly making Earth's days longer, by about 2 milliseconds every century. So that's why I'm always tired.`,
+        `The moon is about 400 times smaller than the Sun and about 400 times closer. That's why total eclipses work. Pure coincidence. Spooky as hell.`,
+        `A "blue moon" is just a second full moon in one month. It's not blue. I'm not mad. I'm disappointed.`,
+        `There are two golf balls on the moon. Alan Shepard hit them in 1971. Littering in space. Legend.`,
+        `The moon has no dark side. The far side gets just as much sun. Pink Floyd lied to you.`,
+    ];
+    let moonClicks = 0;
+    let lastMoonFact = -1;
+    const moonBtn = document.getElementById('moon');
+    moonBtn.setAttribute('aria-label', `The moon: ${moonName}, ${Math.round(moonLit * 100)}% lit`);
+    moonBtn.title = `${moonName.charAt(0).toUpperCase() + moonName.slice(1)}, ${Math.round(moonLit * 100)}% lit. Click it.`;
+    moonBtn.addEventListener('click', () => {
+        setStatus(`Moon: ${moonName}, ${Math.round(moonLit * 100)}% lit`);
+        if (moonClicks++ % 2 === 0) {
+            say('moon', flavour(MOON_PHASE_LINES[moonName]));
+        } else {
+            let i;
+            do { i = Math.floor(Math.random() * MOON_FACTS.length); } while (i === lastMoonFact);
+            lastMoonFact = i;
+            say('moon', MOON_FACTS[i]);
+        }
+        els.bear.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    // the bear notices a full moon all by himself
+    if (moonName === 'full moon') {
+        setTimeout(() => say('shocked', `Oh no. Full moon tonight. I can feel it. I'm turning into... a slightly bigger bear.`), 1500);
+    }
 
     // ---------- easter eggs. if ur reading this, u cheated. respect ----------
 
@@ -1203,6 +1376,9 @@
         `What the hell are you doing?! I could've been a scam site! I'm not. But I could've been.`,
         `Did you just try to give a stranger on the internet your password? Go sit in the corner.`,
         `Rule one: any site that says "check your password!" doesn't deserve your password. Including mine, dumbass.`,
+        `I didn't read it. I deleted it. But a scam site would've read it. Think about that.`,
+        `A real password checker never needs your actual password. Remember that, champ.`,
+        `You failed the vibe check AND the security check. Impressive, honestly.`,
     ];
     let trapCount = 0;
     const trap = document.getElementById('trap');
