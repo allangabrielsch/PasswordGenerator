@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <title>Password Generator ʕ•ᴥ•ʔ</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-1: #0f172a;
+            --bg-2: #1e1b4b;
+            --well: #0b1222;
+            --well-line: #334155;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --blue: #60a5fa;
+            --emerald: #34d399;
+            --rose: #fb7185;
+            --kaomoji: system-ui, -apple-system, 'Segoe UI', 'Segoe UI Symbol', 'Noto Sans', 'Arial Unicode MS', sans-serif;
+        }
+
+        * { box-sizing: border-box; }
+        html, body { margin: 0; }
+
+        body {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 16px;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            color: var(--text);
+            background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%) fixed;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 460px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: clamp(20px, 5vw, 32px);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 20px;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow: 0 30px 60px -20px rgba(2, 6, 23, 0.7);
+        }
+
+        header { text-align: center; }
+        h1 {
+            margin: 0;
+            font-size: clamp(1.4rem, 5vw, 1.75rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        header p {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 0.875rem;
+        }
+
+        /* ---------- The bear ---------- */
+        .bear-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-height: 64px;
+        }
+        .bear {
+            flex-shrink: 0;
+            min-width: 92px;
+            text-align: center;
+            font-family: var(--kaomoji);
+            font-size: 1.45rem;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            background: none;
+            border: 0;
+            color: var(--text);
+            padding: 4px;
+            border-radius: 8px;
+        }
+        .bear.bounce { animation: bounce 380ms ease-out; }
+        @keyframes bounce {
+            0%   { transform: translateY(0); }
+            35%  { transform: translateY(-7px) rotate(-4deg); }
+            70%  { transform: translateY(1px) rotate(2deg); }
+            100% { transform: translateY(0); }
+        }
+        .bubble {
+            position: relative;
+            flex: 1;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            font-size: 0.9rem;
+            line-height: 1.45;
+        }
+        .bubble::before {
+            content: "";
+            position: absolute;
+            left: -7px;
+            top: 50%;
+            width: 12px;
+            height: 12px;
+            background: #1f2546;
+            border-left: 1px solid rgba(255, 255, 255, 0.12);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            transform: translateY(-50%) rotate(45deg);
+        }
+
+        /* ---------- Password readout ---------- */
+        .readout {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 96px;
+            padding: 16px 12px 16px 20px;
+            background: var(--well);
+            border: 1px solid var(--well-line);
+            border-radius: 12px;
+        }
+        .readout-text { flex: 1; min-width: 0; }
+
+        .password {
+            font-family: 'Fira Code', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+            font-size: clamp(1.15rem, 4.8vw, 1.45rem);
+            font-weight: 600;
+            line-height: 1.35;
+            word-break: break-all;
+            letter-spacing: 0.02em;
+        }
+        /* Symbols and digits get their own colour so 0/O and 5/S are easy to tell apart. */
+        .password .d { color: var(--blue); }
+        .password .s { color: var(--emerald); }
+        .password.fresh { animation: settle 220ms ease-out; }
+        @keyframes settle { from { opacity: 0.3; } to { opacity: 1; } }
+
+        .translation {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 0.8125rem;
+        }
+        .translation em { color: #cbd5e1; font-style: italic; }
+
+        .copy-btn {
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
+            border: 0;
+            border-radius: 8px;
+            background: #1e293b;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: background-color 150ms, color 150ms;
+        }
+        .copy-btn:hover { background: #334155; color: #fff; }
+        .copy-btn svg { width: 20px; height: 20px; }
+        .copy-btn .check { display: none; color: var(--emerald); }
+        .copy-btn.copied .copy { display: none; }
+        .copy-btn.copied .check { display: block; }
+
+        .generate {
+            width: 100%;
+            padding: 14px 24px;
+            border: 0;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #2563eb, #059669);
+            color: #fff;
+            font: inherit;
+            font-size: 1.0625rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: filter 150ms, transform 100ms;
+        }
+        .generate:hover { filter: brightness(1.12); }
+        .generate:active { transform: scale(0.985); }
+
+        :focus-visible { outline: 2px solid var(--emerald); outline-offset: 2px; }
+
+        footer {
+            text-align: center;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            color: var(--muted);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <main class="card">
+        <header>
+            <h1>Password generator</h1>
+            <p>Strong passwords. Questionable vocabulary.</p>
+        </header>
+
+        <div class="bear-row">
+            <button id="bear" class="bear" type="button" aria-label="Poke the bear">ʕ•ᴥ•ʔ</button>
+            <div id="bubble" class="bubble">Hi. I make passwords. You use each one once. Got it? Good, now don't screw it up.</div>
+        </div>
+
+        <div class="readout">
+            <div class="readout-text">
+                <div id="password" class="password" aria-live="polite"></div>
+                <div class="translation">Reads as: <em id="translation"></em></div>
+            </div>
+
+            <button id="copy-btn" class="copy-btn" type="button" title="Copy password" aria-label="Copy password">
+                <svg class="copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            </button>
+        </div>
+
+        <button id="generate-btn" class="generate" type="button">Gimme another one</button>
+
+        <footer>Made on your device. Nothing is sent, nothing is saved.<br>You are, however, being judged as hell. ʕ – ᴥ – ʔ</footer>
+    </main>
+
+    <script>
+    const ADVERBS = [
+        "abnormally", "absurdly", "aggressively", "alarmingly", "allegedly", "amazingly",
+        "ambitiously", "angrily", "annoyingly", "anxiously", "apologetically", "arrogantly",
+        "astonishingly", "awkwardly", "badly", "bafflingly", "barely", "bashfully", "bizarrely",
+        "blatantly", "blindly", "blissfully", "boastfully", "boldly", "bravely", "briskly",
+        "brutally", "busily", "calmly", "carefully", "carelessly", "casually", "cautiously",
+        "cheekily", "cheerfully", "chronically", "clumsily", "comically", "completely",
+        "confidently", "confusingly", "constantly", "contentedly", "cosmically", "courageously",
+        "cowardly", "crazily", "creepily", "curiously", "cutely", "daintily", "dangerously",
+        "daringly", "decidedly", "deeply", "defiantly", "deliberately", "delightfully",
+        "deliriously", "desperately", "deviously", "dizzily", "dramatically", "dreadfully",
+        "dreamily", "drunkenly", "eagerly", "eerily", "elegantly", "emotionally", "endlessly",
+        "energetically", "enormously", "enthusiastically", "entirely", "epically", "equally",
+        "erratically", "especially", "eternally", "evidently", "exceedingly", "excessively",
+        "excitedly", "exclusively", "extremely", "fabulously", "faintly", "fairly", "famously",
+        "fanatically", "fantastically", "fearlessly", "ferociously", "fiercely", "firmly",
+        "flagrantly", "flamboyantly", "foolishly", "formally", "frankly", "frantically",
+        "freakishly", "frightfully", "furiously", "fussily", "generously", "gently", "gleefully",
+        "gloriously", "gracefully", "greedily", "grimly", "grumpily", "guiltily", "gullibly",
+        "happily", "hastily", "heavily", "heroically", "hilariously", "hopelessly", "horribly",
+        "hugely", "hungrily", "hysterically", "idly", "illegally", "immensely", "impatiently",
+        "impossibly", "incredibly", "indignantly", "inexplicably", "innocently", "insanely",
+        "intensely", "ironically", "irritably", "jealously", "jokingly", "jovially", "joyfully",
+        "kindly", "laughably", "lazily", "legally", "literally", "loudly", "lovingly",
+        "ludicrously", "madly", "magically", "magnificently", "majestically", "marginally",
+        "massively", "merrily", "mildly", "mischievously", "miserably", "modestly", "mostly",
+        "mysteriously", "naively", "nastily", "naturally", "naughtily", "neatly", "nervously",
+        "nicely", "nobly", "noisily", "nominally", "normally", "notably", "obviously", "oddly",
+        "officially", "only", "openly", "optimistically", "outrageously", "overly", "painfully",
+        "passionately", "patiently", "peacefully", "perfectly", "perpetually", "persistently",
+        "playfully", "pleasantly", "pointlessly", "politely", "pompously", "potentially",
+        "powerfully", "precisely", "properly", "proudly", "purely", "quaintly", "questionably",
+        "quickly", "quietly", "quirkily", "radically", "randomly", "rapidly", "rarely", "rather",
+        "really", "recklessly", "regally", "relentlessly", "remarkably", "reportedly",
+        "ridiculously", "righteously", "rigidly", "roughly", "rudely", "sadly", "sarcastically",
+        "savagely", "scarcely", "secretly", "seemingly", "selfishly", "seriously", "severely",
+        "shamelessly", "sharply", "sheepishly", "shockingly", "shyly", "silently", "sincerely",
+        "sleepily", "slightly", "sloppily", "slowly", "slyly", "smugly", "sneakily", "softly",
+        "solemnly", "somewhat", "sorely", "spectacularly", "speedily", "splendidly", "sternly",
+        "strangely", "strictly", "stubbornly", "stunningly", "suddenly", "superbly", "supposedly",
+        "surprisingly", "suspiciously", "sweetly", "swiftly", "tactfully", "technically",
+        "tenderly", "terribly", "theatrically", "thoroughly", "tightly", "timidly", "totally",
+        "tragically", "tremendously", "truly", "unbelievably", "uncannily", "understandably",
+        "unexpectedly", "unfairly", "unnecessarily", "unreasonably", "unusually", "urgently",
+        "utterly", "vaguely", "vainly", "valiantly", "vastly", "vehemently", "viciously",
+        "victoriously", "vigorously", "violently", "virtually", "visibly", "wearily", "weirdly",
+        "wildly", "wisely", "wistfully", "woefully", "wonderfully", "wrongly", "yearningly",
+        "zealously"
+    ];
+
+    // Adjective and animal lists adapted from the coolname package (BSD 2-Clause licence).
+    const ADJECTIVES = [
+        "abiding", "able", "aboriginal", "abstract", "academic", "accelerated", "accomplished",
+        "accurate", "acoustic", "acrid", "active", "adamant", "adaptable", "adept", "admirable",
+        "adorable", "advanced", "adventurous", "affable", "agate", "aggressive", "agile",
+        "airborne", "alchemical", "alluring", "almond", "aloof", "amaranth", "amazing", "amber",
+        "ambitious", "ambrosial", "amethyst", "amiable", "amigurumi", "amorphous", "amphibian",
+        "amusing", "analytic", "ancient", "angelic", "annoying", "antique", "apricot",
+        "aquamarine", "aquatic", "arboreal", "arcane", "archetypal", "armored", "aromatic",
+        "arrogant", "artichoke", "artificial", "asparagus", "aspiring", "astonishing", "astute",
+        "athletic", "attentive", "attractive", "auburn", "audacious", "augmented", "auspicious",
+        "authentic", "automatic", "awesome", "axiomatic", "azure", "bald", "banana", "beautiful",
+        "beige", "belligerent", "beneficial", "benevolent", "benign", "berserk", "beryl", "big",
+        "bipedal", "bizarre", "black", "blazing", "blond", "blue", "boisterous", "bold", "bouncy",
+        "brainy", "brass", "brave", "brawny", "bright", "brilliant", "broad", "bronze", "brown",
+        "bulky", "burgundy", "burrowing", "busy", "calculating", "calm", "camouflaged", "capable",
+        "caped", "careful", "carmine", "carrot", "casual", "cautious", "celadon", "celestial",
+        "cerise", "certain", "cerulean", "charcoal", "charming", "cheerful", "cherry", "cherubic",
+        "chestnut", "chirpy", "chivalrous", "chocolate", "chubby", "cinnamon", "classic", "classy",
+        "clay", "clever", "cobalt", "cocky", "colorful", "colossal", "comical", "competent",
+        "complex", "congenial", "conscious", "controversial", "convivial", "cooperative", "copper",
+        "coral", "cordial", "cornflower", "courageous", "crafty", "crazy", "cream", "crimson",
+        "crouching", "cryptic", "crystal", "cuddly", "cunning", "curious", "curly", "curvy",
+        "cute", "cyan", "cyber", "daffodil", "daffy", "daft", "dainty", "dancing", "dandelion",
+        "dangerous", "daring", "dark", "dashing", "dazzling", "debonair", "defiant", "deft",
+        "delectable", "delicate", "delightful", "demonic", "denim", "determined", "devious",
+        "devout", "dexterous", "diamond", "didactic", "diligent", "discerning", "discreet",
+        "divergent", "dramatic", "durable", "dynamic", "eager", "easygoing", "ebony", "eccentric",
+        "economic", "ecstatic", "educational", "effective", "efficient", "eggplant", "elastic",
+        "elated", "electric", "electronic", "elegant", "elfish", "elite", "elusive", "emerald",
+        "eminent", "emotional", "enchanted", "encouraging", "energetic", "enigmatic",
+        "enlightened", "enormous", "enthusiastic", "esoteric", "essential", "ethereal", "evasive",
+        "excellent", "exceptional", "exotic", "expensive", "expert", "exuberant", "fabulous",
+        "fair", "faithful", "famous", "fanatic", "fancy", "fantastic", "fascinating", "fast",
+        "fat", "favorite", "fearless", "feathered", "fervent", "festive", "fictional", "fierce",
+        "fiery", "fine", "finicky", "flashy", "flat", "flawless", "flexible", "fluffy",
+        "fluorescent", "flying", "foamy", "formidable", "fortunate", "fractal", "fragrant", "free",
+        "fresh", "friendly", "frisky", "functional", "funky", "funny", "furious", "furry",
+        "futuristic", "fuzzy", "gabby", "gainful", "garnet", "garrulous", "gay", "generous",
+        "gentle", "gifted", "giga", "gigantic", "ginger", "girlish", "glaring", "gleaming",
+        "gleeful", "glistening", "glittering", "glorious", "glossy", "godlike", "golden",
+        "gorgeous", "graceful", "gracious", "granite", "grateful", "gray", "great", "greedy",
+        "green", "gregarious", "grinning", "groovy", "grumpy", "hairy", "hallowed", "handsome",
+        "happy", "hasty", "healthy", "heavenly", "heavy", "helpful", "heretic", "hidden",
+        "hilarious", "hissing", "holistic", "honest", "honorable", "honored", "hopeful", "hopping",
+        "horned", "hospitable", "hot", "huge", "hulking", "humble", "humongous", "humorous",
+        "hungry", "hypersonic", "hypnotic", "hysterical", "icy", "idealistic", "illegal",
+        "illustrious", "imaginary", "immortal", "impartial", "imperial", "imperious", "impetuous",
+        "important", "imported", "imposing", "impossible", "impressive", "incredible",
+        "indefinable", "independent", "indigo", "industrious", "inescapable", "infallible",
+        "influential", "infrared", "ingenious", "innocent", "inquisitive", "inscrutable",
+        "intelligent", "interesting", "international", "intrepid", "invaluable", "inventive",
+        "invincible", "invisible", "iron", "ivory", "jade", "jasmine", "jasper", "jolly", "jovial",
+        "judicious", "juicy", "jumping", "just", "keen", "khaki", "kickass", "kind", "knowing",
+        "large", "laughing", "lavender", "lean", "legendary", "lemon", "liberal", "light",
+        "likable", "lilac", "lime", "literate", "little", "lively", "logical", "loose", "loud",
+        "loutish", "lovely", "loyal", "lucky", "ludicrous", "luminous", "lumpy", "lurking", "lush",
+        "lyrical", "macho", "magenta", "magic", "magnetic", "magnificent", "mahogany", "maize",
+        "majestic", "malachite", "manipulative", "marble", "marigold", "maroon", "married",
+        "marvellous", "masked", "massive", "masterful", "mature", "mauve", "meaty", "meek", "mega",
+        "mellow", "melodic", "memorable", "merciful", "merry", "messy", "metal", "meteoric",
+        "meticulous", "micro", "mighty", "military", "mindful", "mini", "miniature", "miraculous",
+        "misty", "modern", "modest", "monumental", "mottled", "muscular", "musical", "mustard",
+        "mutant", "myrtle", "mysterious", "mystic", "nano", "native", "natural", "naughty", "neat",
+        "nebulous", "neon", "nice", "nickel", "nifty", "nimble", "ninja", "nippy", "noble",
+        "nocturnal", "noisy", "nonchalant", "nondescript", "normal", "nostalgic", "notorious",
+        "obedient", "objective", "observant", "ochre", "offbeat", "olive", "olivine", "omniscient",
+        "onyx", "opal", "opalescent", "optimal", "optimistic", "orange", "orchid", "ordinary",
+        "organic", "origami", "original", "orthodox", "outgoing", "outrageous", "outstanding",
+        "overjoyed", "papaya", "paper", "passionate", "pastel", "pastoral", "peach", "pearl",
+        "peculiar", "perfect", "peridot", "perky", "persimmon", "petite", "phenomenal", "pink",
+        "piquant", "pistachio", "placid", "platinum", "poetic", "poised", "polar", "polite",
+        "pompous", "popular", "porcelain", "portable", "positive", "powerful", "practical",
+        "pragmatic", "precious", "precise", "predictable", "prehistoric", "premium", "pretty",
+        "primitive", "pristine", "private", "prodigious", "proficient", "prompt", "prophetic",
+        "proud", "provocative", "prudent", "psychedelic", "pumpkin", "purple", "purring",
+        "puzzling", "pygmy", "quaint", "qualified", "quantum", "quartz", "quick", "quiet",
+        "quirky", "quixotic", "quizzical", "radiant", "radical", "rainbow", "rampant", "rapid",
+        "rare", "raspberry", "rational", "real", "realistic", "reasonable", "rebel", "red",
+        "refined", "refreshing", "relaxed", "reliable", "remarkable", "resilient", "resolute",
+        "resourceful", "responsible", "rich", "righteous", "rigorous", "roaring", "robust",
+        "romantic", "rose", "rough", "rousing", "ruby", "ruddy", "rugged", "russet", "rustling",
+        "saffron", "sage", "sandy", "sapphire", "sarcastic", "sassy", "satisfied", "savvy",
+        "scarlet", "sceptical", "screeching", "scrupulous", "secret", "sensible", "sepia",
+        "serious", "sexy", "shaggy", "shapeless", "shiny", "shrewd", "significant", "silent",
+        "silky", "silver", "simple", "sincere", "singing", "skilled", "skinny", "slick", "slim",
+        "sloppy", "sly", "small", "smart", "smiling", "smoky", "smooth", "snobbish", "sociable",
+        "soft", "solemn", "solid", "sophisticated", "space", "sparkling", "spectacular",
+        "spectral", "speedy", "spicy", "spiffy", "spiked", "spirited", "spiritual", "splendid",
+        "spotted", "spry", "stalwart", "statuesque", "steadfast", "steady", "steel", "stereotyped",
+        "sticky", "stimulating", "stirring", "stoic", "straight", "strange", "strategic", "strict",
+        "striped", "strong", "sturdy", "stylish", "subtle", "successful", "succinct", "super",
+        "supportive", "sweet", "swinging", "sympathetic", "tacky", "tactful", "talented",
+        "talkative", "tall", "tan", "tangerine", "tangible", "tasteful", "taupe", "teal",
+        "tentacled", "terrestrial", "terrific", "tested", "thankful", "therapeutic", "thick",
+        "thistle", "thoughtful", "thundering", "tidy", "tiny", "tireless", "tomato", "topaz",
+        "tough", "tourmaline", "towering", "traditional", "translucent", "transparent",
+        "tremendous", "tricky", "true", "truthful", "tungsten", "tunneling", "turquoise", "tuscan",
+        "uber", "ubiquitous", "ultra", "ultramarine", "ultraviolet", "umber", "unbeatable",
+        "unbiased", "unbreakable", "uncovered", "undetectable", "unique", "unnatural", "unselfish",
+        "unstoppable", "unyielding", "upbeat", "uppish", "uptight", "urban", "utopian", "vagabond",
+        "vague", "valiant", "vanilla", "vegan", "vehement", "venerable", "vengeful", "venomous",
+        "vermilion", "versatile", "versed", "victorious", "vigilant", "vigorous", "violet",
+        "viridian", "visionary", "vivacious", "vivid", "vociferous", "voracious", "wakeful",
+        "wandering", "warm", "warping", "watchful", "wealthy", "weightless", "whimsical",
+        "whispering", "white", "wild", "wine", "winged", "wise", "wisteria", "witty", "wonderful",
+        "wondrous", "wooden", "woodoo", "worthy", "xanthic", "yellow", "zealous", "zippy",
+        "zircon"
+    ];
+
+    const ANIMALS = [
+        "aardvark", "aardwolf", "adder", "agama", "agouti", "albatross", "alligator", "alpaca",
+        "ammonite", "anaconda", "angelfish", "ant", "anteater", "antelope", "ape", "ara",
+        "armadillo", "asp", "auk", "avocet", "axolotl", "baboon", "badger", "bandicoot",
+        "barnacle", "barracuda", "bat", "bear", "beaver", "bee", "beetle", "beluga", "bettong",
+        "binturong", "bird", "bison", "bittern", "boa", "boar", "bobcat", "bonobo", "boobook",
+        "booby", "buffalo", "bug", "bull", "bullfinch", "bullfrog", "bumblebee", "bustard",
+        "butterfly", "buzzard", "caiman", "camel", "capuchin", "capybara", "caracal", "caracara",
+        "caribou", "carp", "cassowary", "cat", "caterpillar", "catfish", "centipede", "chachalaca",
+        "chameleon", "chamois", "cheetah", "chicken", "chimpanzee", "chinchilla", "chipmunk",
+        "chital", "cicada", "civet", "clam", "coati", "cobra", "cockatoo", "cockle", "condor",
+        "coot", "copperhead", "cormorant", "coua", "coucal", "cougar", "cow", "coyote", "crab",
+        "crane", "crayfish", "cricket", "crocodile", "crow", "cuckoo", "curassow", "cuscus",
+        "cuttlefish", "deer", "degu", "dingo", "dinosaur", "dodo", "dog", "dogfish", "dolphin",
+        "donkey", "dormouse", "dove", "dragon", "dragonfly", "duck", "dugong", "eagle",
+        "earthworm", "earwig", "echidna", "eel", "elephant", "elk", "emu", "ermine", "falcon",
+        "fennec", "ferret", "finch", "firefly", "flamingo", "flounder", "fossa", "fox",
+        "frigatebird", "frog", "frogmouth", "fulmar", "galago", "gaur", "gazelle", "gecko",
+        "gerbil", "gharial", "gibbon", "giraffe", "goat", "goldfish", "goose", "gopher", "gorilla",
+        "goshawk", "grasshopper", "grebe", "groundhog", "grouse", "guan", "guillemot", "guppy",
+        "hamster", "hare", "harrier", "hawk", "hedgehog", "heron", "herring", "hippo", "hoatzin",
+        "hog", "honeybee", "hornet", "horse", "hound", "hummingbird", "hyena", "hyrax", "ibex",
+        "ibis", "iguana", "impala", "inchworm", "jacamar", "jackal", "jackdaw", "jackrabbit",
+        "jaguar", "jaguarundi", "jaybird", "jellyfish", "jerboa", "junglefowl", "kagu", "kakapo",
+        "kangaroo", "kestrel", "kingfisher", "kittiwake", "kiwi", "koala", "koel", "kudu",
+        "ladybug", "leech", "lemming", "lemur", "leopard", "limpet", "lion", "lionfish", "lizard",
+        "llama", "lobster", "locust", "loon", "lorikeet", "loris", "lynx", "lyrebird", "macaque",
+        "macaw", "mackerel", "magpie", "malkoha", "mamba", "mammoth", "manatee", "mandrill",
+        "mantis", "manul", "markhor", "marmoset", "marmot", "marten", "mastodon", "mayfly",
+        "meerkat", "millipede", "mink", "mole", "mongoose", "monkey", "moose", "mosquito", "moth",
+        "mouflon", "mouse", "mushroom", "muskox", "muskrat", "mussel", "myna", "narwhal",
+        "nautilus", "newt", "nightingale", "numbat", "nuthatch", "nyala", "oarfish", "ocelot",
+        "octopus", "okapi", "orangutan", "orca", "oriole", "oryx", "ostrich", "otter", "owl",
+        "oxpecker", "oyster", "panda", "panther", "parakeet", "parrot", "partridge", "peacock",
+        "peccary", "pelican", "penguin", "perch", "petrel", "pheasant", "piculet", "pig", "pigeon",
+        "pillbug", "platypus", "pogona", "polecat", "porcupine", "porpoise", "potoo", "prawn",
+        "pronghorn", "pudu", "puffin", "puma", "python", "quail", "quetzal", "quokka", "quoll",
+        "rabbit", "raccoon", "raptor", "rat", "rattlesnake", "raven", "reindeer", "rhino",
+        "ringtail", "roadrunner", "robin", "rook", "rooster", "saiga", "salamander", "salmon",
+        "sambar", "sawfish", "sawfly", "scallop", "scorpion", "seagull", "seahorse", "seal",
+        "seriema", "serval", "shark", "sheep", "shellfish", "shoebill", "shrew", "shrimp",
+        "sidewinder", "silkworm", "skink", "skua", "skunk", "skylark", "sloth", "slug", "smilodon",
+        "snail", "snake", "sparrow", "spider", "sponge", "spoonbill", "squid", "squirrel",
+        "stallion", "starfish", "starling", "stingray", "stoat", "stork", "sturgeon", "sunfish",
+        "swallow", "swan", "swift", "swine", "taipan", "tamarin", "tanuki", "tapir", "tarantula",
+        "tarsier", "teal", "tench", "termite", "tiger", "toad", "tody", "tortoise", "toucan",
+        "toucanet", "trogon", "trout", "tuatara", "tuna", "turaco", "turkey", "turtle", "uakari",
+        "urchin", "velociraptor", "vicugna", "viper", "vole", "vulture", "wallaby", "walrus",
+        "wapiti", "warthog", "wasp", "waxbill", "weasel", "whale", "wildcat", "wildebeest", "wolf",
+        "wolverine", "wombat", "woodlouse", "woodpecker", "worm", "wrasse", "wren", "yak", "zebra",
+        "zebu"
+    ];
+
+    const LEET = { a: '@', e: '3', i: '!', o: '0', s: '5', g: '9' };
+    const SEPARATORS = ['-', '=', '+', '!', '?', '$', '*', '&', '~', '^'];
+    const MAX_LENGTH = 30;
+
+    // Uniform random integer in [0, max) from the browser's secure generator.
+    function randomInt(max) {
+        const limit = Math.floor(0x100000000 / max) * max; // reject to avoid modulo bias
+        const buf = new Uint32Array(1);
+        do { crypto.getRandomValues(buf); } while (buf[0] >= limit);
+        return buf[0] % max;
+    }
+    const pick = (list) => list[randomInt(list.length)];
+
+    // Each letter: 3 in 4 chance of a symbol swap if it has one, otherwise random upper/lower case.
+    function scramble(word) {
+        let out = '';
+        for (const ch of word) {
+            if (LEET[ch] && randomInt(4) < 3) out += LEET[ch];
+            else out += randomInt(2) ? ch.toUpperCase() : ch;
+        }
+        return out;
+    }
+
+    // Adverb + adjective + animal, e.g. "suspiciously fluffy otter", joined by one random symbol.
+    // Combos longer than MAX_LENGTH are redrawn, so every allowed combo stays equally likely.
+    function makePassword() {
+        let words;
+        do {
+            words = [pick(ADVERBS), pick(ADJECTIVES), pick(ANIMALS)];
+        } while (words.join('').length + 2 > MAX_LENGTH);
+        const sep = pick(SEPARATORS);
+        return { password: words.map(scramble).join(sep), words };
+    }
+
+    // ---------- The bear's personality (cosmetic only, uses Math.random) ----------
+    const FACES = {
+        neutral:  'ʕ•ᴥ•ʔ',
+        happy:    'ʕ ᵔᴥᵔ ʔ',
+        proud:    'ʕ•̀ω•́ʔ✧',
+        hug:      'ʕっ•ᴥ•ʔっ',
+        meh:      'ʕ – ᴥ – ʔ',
+        annoyed:  'ʕ •`ᴥ•´ʔ',
+        shocked:  'ʕ ◉ᴥ◉ ʔ',
+        sad:      'ʕ ´•̥ ᴥ •̥`ʔ',
+        sleepy:   'ʕ ꈍᴥꈍʔ zzz',
+        flip:     'ʕノ•ᴥ•ʔノ ︵ ┻━┻',
+        unflip:   '┬─┬ ノʕ•ᴥ•ノʔ',
+        wink:     'ʕ ´•ᴥ<ʔ',
+    };
+
+    const aOrAn = (phrase) => (/^[aeiou]/.test(phrase) ? 'an ' : 'a ') + phrase;
+    const cap = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+
+    const NEW_LINES = [
+        (p) => `Behold: ${aOrAn(p)}. You're fucking welcome.`,
+        (p) => `Somewhere out there, ${aOrAn(p)} is judging your shitty old passwords.`,
+        (p) => `${cap(aOrAn(p))} would never reuse a password. Be the damn ${p.split(' ').pop()}.`,
+        (p) => `"${cap(p)}" is also the name of my band now. We suck.`,
+        (p) => `${cap(aOrAn(p))}. Hackers hate this one weird-ass animal.`,
+        (p) => `Picture ${aOrAn(p)}. Hell yes. Now never think about it again.`,
+        ()  => `Fresh out of the oven. Reuse it and I'll lose my shit.`,
+        ()  => `Hand-crafted by a bear. Zero humans were consulted, thank god.`,
+        ()  => `Stronger than "password123". Low bar, but damn, you needed this.`,
+        ()  => `If you write this on a sticky note, I swear to god I will find you.`,
+        ()  => `Certified fresh. Not certified sane. Who gives a crap.`,
+        ()  => `Another masterpiece. I should be charging for this shit.`,
+    ];
+    const NEW_FACES = ['happy', 'proud', 'neutral', 'wink'];
+
+    const COPY_LINES = [
+        `Copied. Now go paste it somewhere responsible, dammit.`,
+        `On your clipboard. Tape it to your monitor and I'll bite your ass.`,
+        `Copied! Your password manager is gonna love this shit.`,
+        `Done. One password, one site. Don't fuck this up.`,
+        `Copied. Use it before I change my damn mind.`,
+    ];
+
+    const MILESTONES = {
+        10:  ['meh',     `That's ten. Commitment issues much?`],
+        25:  ['annoyed', `Twenty-five. They're all good, for fuck's sake. Pick one.`],
+        50:  ['flip',    `FIFTY. I'm a bear, not a goddamn slot machine.`],
+        51:  ['unflip',  `...sorry. I'm fine. Here's another one, jackass.`],
+        100: ['shocked', `A HUNDRED? Holy shit. They're random, you know that, right?`],
+    };
+
+    const POKE_LINES = [
+        ['annoyed', `Do you mind? I'm fucking working here.`],
+        ['shocked', `Hey! Paws off, asshole.`],
+        ['meh',     `Poking the bear. Bold strategy, dumbass.`],
+        ['happy',   `Fine. One poke. That's all you get, damn it.`],
+        ['wink',    `Psst. Different password on every site. Or else.`],
+    ];
+
+    const els = {
+        password: document.getElementById('password'),
+        translation: document.getElementById('translation'),
+        copyBtn: document.getElementById('copy-btn'),
+        generateBtn: document.getElementById('generate-btn'),
+        bear: document.getElementById('bear'),
+        bubble: document.getElementById('bubble'),
+    };
+
+    const flavour = (list) => list[Math.floor(Math.random() * list.length)];
+    let current = '';
+    let count = 0;
+    let lastLine = -1;
+    let idleTimer;
+    let copiedTimer;
+
+    function say(face, text) {
+        els.bear.textContent = FACES[face] || FACES.neutral;
+        els.bubble.textContent = text;
+        els.bear.classList.remove('bounce');
+        void els.bear.offsetWidth;
+        els.bear.classList.add('bounce');
+        resetIdle();
+    }
+
+    function resetIdle() {
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => {
+            els.bear.textContent = FACES.sleepy;
+            els.bubble.textContent = `Wake me when you need another damn password.`;
+        }, 60000);
+    }
+
+    function show({ password, words }) {
+        current = password;
+        const frag = document.createDocumentFragment();
+        for (const ch of password) {
+            const span = document.createElement('span');
+            span.textContent = ch;
+            if (/[0-9]/.test(ch)) span.className = 'd';
+            else if (!/[a-z]/i.test(ch)) span.className = 's';
+            frag.appendChild(span);
+        }
+        els.password.replaceChildren(frag);
+        els.password.classList.remove('fresh');
+        void els.password.offsetWidth;
+        els.password.classList.add('fresh');
+        els.translation.textContent = words.join(' ');
+        return words.join(' ');
+    }
+
+    function generate() {
+        const phrase = show(makePassword());
+        count++;
+        if (MILESTONES[count]) {
+            say(...MILESTONES[count]);
+            return;
+        }
+        let i;
+        do { i = Math.floor(Math.random() * NEW_LINES.length); } while (i === lastLine);
+        lastLine = i;
+        say(flavour(NEW_FACES), NEW_LINES[i](phrase));
+    }
+
+    async function writeClipboard(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+            return navigator.clipboard.writeText(text);
+        }
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand('copy');
+        ta.remove();
+        if (!ok) throw new Error('Copy failed');
+    }
+
+    els.copyBtn.addEventListener('click', async () => {
+        try {
+            await writeClipboard(current);
+            els.copyBtn.classList.add('copied');
+            clearTimeout(copiedTimer);
+            copiedTimer = setTimeout(() => els.copyBtn.classList.remove('copied'), 1600);
+            say('hug', flavour(COPY_LINES));
+        } catch {
+            say('sad', `Your stupid browser won't let me copy. Select it and copy it yourself, you've got hands.`);
+        }
+    });
+
+    els.generateBtn.addEventListener('click', generate);
+    els.bear.addEventListener('click', () => say(...flavour(POKE_LINES)));
+
+    show(makePassword());
+    resetIdle();
+    </script>
+</body>
+</html>
