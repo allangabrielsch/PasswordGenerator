@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<!-- 404. the page u wanted got eaten. the bear is not sorry -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 ʕ •`ᴥ•´ʔ page eaten</title>
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAYAAABXuSs3AAABR0lEQVR42mNgGAWjYBSMAmoCRnQBDTGO/9gU3nj1g5EeDiLWfqYhH+Iwn1YEaGFV2LHhGk1DnlT7h26IE/IpLp9TG5Bq/5ANcRZ0AQ8XPxT+jj2bKAohcmOQkDuGT4hTKy3S2rzhE+K40rSCkgwK/8G9JzR1GC53DP+aExbStA5hYkufkVdzDjQYfjUnIRA/8ywDAwMDgyw/OwMDAwNDS4QOWRZTas7ICXFYCFEKKDVn5IQ4rrQYkFdBlP4NkzooyhsjL8QJAQuHGKziJw4soao9Q7/mDLOQYmBgYGBQkhAgyQBcaRsW8rhCGpbWiQX3XnxgYGBgYFh14tkwax1SGvLoIY3OpzSkh37rEF0APeRhgNQYIBfAQhgG0EN6+PSAcIU8DKDHAK0ALIRhANdY5fALcUIxQCtA7GjwkA3xUTAKRsEooC4AABiigb5wRZdIAAAAAElFTkSuQmCC">
+    <style>
+        * { box-sizing: border-box; }
+        html, body { margin: 0; }
+        body {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 16px;
+            background: #000033 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Crect width='140' height='140' fill='%23000033'/%3E%3Ccircle cx='12' cy='18' r='1.2' fill='%23fff'/%3E%3Ccircle cx='70' cy='9' r='0.8' fill='%23fff'/%3E%3Ccircle cx='118' cy='30' r='1.4' fill='%23ffff99'/%3E%3Ccircle cx='40' cy='60' r='0.9' fill='%23fff'/%3E%3Ccircle cx='96' cy='74' r='1' fill='%23ccccff'/%3E%3Ccircle cx='20' cy='104' r='1.3' fill='%23fff'/%3E%3Ccircle cx='132' cy='118' r='0.8' fill='%23fff'/%3E%3Ccircle cx='66' cy='126' r='1.1' fill='%23ffff99'/%3E%3Cpath d='M84 38l2 5 5 2-5 2-2 5-2-5-5-2 5-2z' fill='%23ffff66'/%3E%3Cpath d='M28 82l1.4 3.6 3.6 1.4-3.6 1.4L28 92l-1.4-3.6L23 87l3.6-1.4z' fill='%23ffffff'/%3E%3C/svg%3E") repeat;
+            font-family: 'Comic Sans MS', 'Comic Sans', 'Comic Neue', sans-serif;
+            color: #fff;
+            text-align: center;
+        }
+        /* windows 95 error box. the most 90s way to tell someone they messed up */
+        .window {
+            width: 100%;
+            max-width: 420px;
+            background: #c0c0c0;
+            color: #000;
+            text-align: left;
+            border: 2px solid;
+            border-color: #fff #404040 #404040 #fff;
+            box-shadow: 1px 1px 0 #000, 6px 6px 0 rgba(0, 0, 0, 0.5);
+        }
+        .titlebar {
+            padding: 3px 6px;
+            background: linear-gradient(90deg, #000080, #1084d0);
+            color: #fff;
+            font-weight: bold;
+        }
+        .body { display: flex; gap: 14px; align-items: center; padding: 18px 16px 8px; }
+        .bear { font-family: system-ui, -apple-system, 'Segoe UI', 'Segoe UI Symbol', 'Noto Sans', sans-serif; font-size: 1.6rem; white-space: nowrap; color: #663300; }
+        .body p { margin: 0 0 6px; }
+        .buttons { display: flex; justify-content: center; padding: 10px 16px 16px; }
+        .btn {
+            min-width: 120px;
+            padding: 8px 14px;
+            background: #c0c0c0;
+            color: #000;
+            text-decoration: none;
+            text-align: center;
+            font-weight: bold;
+            border: 2px solid;
+            border-color: #fff #404040 #404040 #fff;
+            box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+        }
+        .btn:active { border-color: #404040 #fff #fff #404040; box-shadow: inset 1px 1px 0 #808080; }
+        .btn:focus-visible { outline: 1px dotted #000; outline-offset: -6px; }
+        small { display: block; margin-top: 18px; color: #aaaaff; }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="window" role="alertdialog" aria-labelledby="t">
+            <div class="titlebar" id="t">404.EXE</div>
+            <div class="body">
+                <div class="bear" aria-hidden="true">ʕ •`ᴥ•´ʔ</div>
+                <div>
+                    <p><b>This page got eaten by a bear.</b></p>
+                    <p>It was delicious. No, you can't have it back.</p>
+                </div>
+            </div>
+            <div class="buttons"><a id="home" class="btn" href="/">OK, take me home</a></div>
+        </div>
+        <small>Error 404: page not found. Bear found. Bear full.</small>
+    </div>
+    <script>
+        // on github pages the site lives at /repo-name/, so send ppl back there instead of the root
+        if (location.hostname.endsWith('.github.io')) {
+            const repo = location.pathname.split('/').filter(Boolean)[0];
+            const userSite = location.hostname.replace('.github.io', '') + '.github.io';
+            if (repo && repo !== userSite) document.getElementById('home').href = '/' + repo + '/';
+        }
+    </script>
+</body>
+</html>
